@@ -59,14 +59,14 @@ contract SportsPool is owned, mortal, priced{
         mapping (address => Bet) bets;
     }
     
-    struct Pool{
+    struct Tournament{
         uint id;
         mapping (uint => Match) matches;
         uint lastMatchId;
     }
     
-    mapping (uint => Pool) pools;
-    uint lastPoolId;
+    mapping (uint => Tournament) tournaments;
+    uint lastTournamentId;
     
     event Join(
         address indexed _from,
@@ -80,59 +80,59 @@ contract SportsPool is owned, mortal, priced{
     // It is important to also provide the
     // `payable` keyword here, otherwise the function will
     // automatically reject all Ether sent to it.
-    function joinPoolMatch(uint poolId, uint matchId) public payable costs(pools[poolId].matches[matchId].price) {
-        Pool storage pool = pools[poolId];
-        pool.matches[matchId].players++;
+    function joinTournamentMatch(uint tournamentId, uint matchId) public payable costs(tournaments[tournamentId].matches[matchId].price) {
+        Tournament storage tournament = tournaments[tournamentId];
+        tournament.matches[matchId].players++;
         Join(msg.sender, msg.value);
     }
     
-    //Creates new Pool with entry price
-    function addPool() public onlyOwner{
-        pools[lastPoolId] = Pool({id:lastPoolId,lastMatchId:0});
-        lastPoolId++;
+    //Creates new Tournament with entry price
+    function addTournament() public onlyOwner{
+        tournaments[lastTournamentId] = Tournament({id:lastTournamentId, lastMatchId:0});
+        lastTournamentId++;
     }
     
     //figure out what data to ret here
-    //Returns Pool by id
-    function getPool(uint poolId) public view returns(uint id){
-        Pool storage p = pools[poolId];
-        return (p.id);
+    //Returns Tournament by id
+    function getTournament(uint tournamentId) public view returns(uint id){
+        Tournament storage t = tournaments[tournamentId];
+        return (t.id);
     }
     
-    //Returns total Pool prize ammount
-    function getMatchPrize(uint poolId, uint matchId) public view returns( uint prize){
-        Pool storage p = pools[poolId];
-        Match storage m = p.matches[matchId];
+    //Returns total Tournament prize amount
+    function getMatchPrize(uint tournamentId, uint matchId) public view returns( uint prize){
+        Tournament storage t = tournaments[tournamentId];
+        Match storage m = t.matches[matchId];
         return m.price* m.players;
     }
     
-    //Divide pool funds amongst the winners
-    function closePool(uint poolId) public onlyOwner{
-        //todo delete pool or not to keep for history? and pay top players
+    //Divide tournament funds amongst the winners
+    function closeTournament(uint tournamentId) public onlyOwner{
+        //todo delete tournament or not to keep for history? and pay top players
         //todo event
     }
     
-    //Add match to a pool 
-    function addMatch(uint poolId,uint price, uint teamAId, uint teamBId) public onlyOwner{
-        Pool storage p = pools[poolId];
-        p.matches[p.lastMatchId] = Match({id:p.lastMatchId,price:price,players:0,idTeamA:teamAId,idTeamB:teamBId,scoreTeamA:-1,scoreTeamB:-1});
-        p.lastMatchId++;
+    //Add match to a tournament
+    function addMatch(uint tournamentId,uint price, uint teamAId, uint teamBId) public onlyOwner{
+        Tournament storage t = tournaments[tournamentId];
+        t.matches[t.lastMatchId] = Match({id:t.lastMatchId, price:price, players:0, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1});
+        t.lastMatchId++;
         //todo even
     }
     
     //Set final match scores
-    function setMatchScores(uint poolId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
-        Pool storage p = pools[poolId];
-        Match storage m = p.matches[matchId];
+    function setMatchScores(uint tournamentId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
+        Tournament storage t = tournaments[tournamentId];
+        Match storage m = t.matches[matchId];
         m.scoreTeamA = scoreTeamA;
         m.scoreTeamB = scoreTeamB;
-        //what if last match? auto closePool?
+        //what if last match? auto closeTournament?
         //todo even
     }
     
-    function addBet(uint poolId, uint matchId, uint scoreTeamA, uint scoreTeamB)public{
+    function addBet(uint tournamentId, uint matchId, uint scoreTeamA, uint scoreTeamB)public{
         //todo stop if time is too close to match
-        Pool storage p = pools[poolId];
+        Tournament storage p = tournaments[tournamentId];
         Match storage m = p.matches[matchId];
         m.bets[msg.sender] = Bet(scoreTeamA,scoreTeamB);
     }
