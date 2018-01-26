@@ -42,7 +42,11 @@ contract priced {
     }
 }
 contract SportsPool is owned, mortal, priced{
-    
+
+    /**
+     *  Structs
+     **/
+
     struct Bet{
         uint scoreTeamA;
         uint scoreTeamB;
@@ -54,8 +58,9 @@ contract SportsPool is owned, mortal, priced{
         uint players;
         uint idTeamA;//could be string
         uint idTeamB;//could be string
-        int scoreTeamA;//initialized with -1 untill final score is known
-        int scoreTeamB;//initialized with -1 untill final score is known
+        bool cancelled;
+        int scoreTeamA;//initialized with -1 until final score is known
+        int scoreTeamB;//initialized with -1 until final score is known
         mapping (address => Bet) bets;
     }
     
@@ -64,15 +69,30 @@ contract SportsPool is owned, mortal, priced{
         mapping (uint => Match) matches;
         uint lastMatchId;
     }
+
+    /**
+     *  Storage
+     **/
     
     mapping (uint => Tournament) tournaments;
     uint lastTournamentId;
-    
-    event Join(
-        address indexed _from,
-        uint _value
-    );
-    
+
+    /**
+     *  Events
+     **/
+
+    event Join(address indexed _from, uint _value);
+    event MatchAdded(uint tournamentId, uint matchId);
+    event MatchEdited(uint tournamentId, uint matchId);
+    event MatchEnded(uint tournamentId, uint matchId);
+    event BetAdded(uint tournamentId, uint matchId);
+    event BetEdited(uint tournamentId, uint matchId);
+
+
+    /**
+     *  Functions
+     **/
+
     function SportsPool() public {
         //todo: setup
     }
@@ -100,10 +120,14 @@ contract SportsPool is owned, mortal, priced{
     }
     
     //Returns total Tournament prize amount
-    function getMatchPrize(uint tournamentId, uint matchId) public view returns( uint prize){
+    function getMatchPrize(uint tournamentId, uint matchId) public view returns (uint prize){
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
-        return m.price* m.players;
+
+        if (m.cancelled)
+            return 0;
+        else
+            return m.price * m.players;
     }
     
     //Divide tournament funds amongst the winners
@@ -113,27 +137,76 @@ contract SportsPool is owned, mortal, priced{
     }
     
     //Add match to a tournament
-    function addMatch(uint tournamentId,uint price, uint teamAId, uint teamBId) public onlyOwner{
+    function addMatch(uint tournamentId, uint price, uint teamAId, uint teamBId) public onlyOwner{
+        // Data Modification
         Tournament storage t = tournaments[tournamentId];
-        t.matches[t.lastMatchId] = Match({id:t.lastMatchId, price:price, players:0, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1});
+        t.matches[t.lastMatchId] = Match({id:t.lastMatchId, price:price, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1});
         t.lastMatchId++;
-        //todo even
+
+        // Event
+        MatchAdded(tournamentId, t.lastMatchId);
+    }
+
+    // Edits an existing match
+    function editMatch(uint tournamentId, uint matchId, uint price, uint teamAId, uint teamBId, bool cancelled) public onlyOwner {
+        // Data Modification
+        Tournament storage p = tournaments[tournamentId];
+        Match storage m = p.matches[matchId];
+        m.price = price;
+        m.idTeamA = teamAId;
+        m.idTeamB = teamBId;
+        m.cancelled = cancelled;
+
+        // Event
+        MatchEdited(tournamentId, matchId);
     }
     
     //Set final match scores
     function setMatchScores(uint tournamentId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
+        // Data Modification
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
         m.scoreTeamA = scoreTeamA;
         m.scoreTeamB = scoreTeamB;
+
+        // todo - pay users?
         //what if last match? auto closeTournament?
-        //todo even
+
+        // Event
+        MatchEnded(tournamentId, matchId);
     }
-    
-    function addBet(uint tournamentId, uint matchId, uint scoreTeamA, uint scoreTeamB)public{
+
+    // Add Bet to an existing match
+    function addBet(uint tournamentId, uint matchId, uint scoreTeamA, uint scoreTeamB) public {
         //todo stop if time is too close to match
+        // Data Modification
         Tournament storage p = tournaments[tournamentId];
         Match storage m = p.matches[matchId];
-        m.bets[msg.sender] = Bet(scoreTeamA,scoreTeamB);
+        m.bets[msg.sender] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+
+        // Event
+        BetAdded(tournamentId, matchId);
     }
+
+    // Edit an existing Bet for a given Match
+    function editBet(uint tournamentId, uint matchId, uint scoreTeamA, uint scoreTeamB) public {
+        //todo stop if time is too close to match or passed
+        // Data Modification
+        Tournament storage p = tournaments[tournamentId];
+        Match storage m = p.matches[matchId];
+        m.bets[msg.sender].scoreTeamA = scoreTeamA;
+        m.bets[msg.sender].scoreTeamB = scoreTeamB;
+
+        // Event
+        BetEdited(tournamentId, matchId);
+    }
+
+    // Checks the Bet status of a match for a specific user
+    function getBet(uint tournamentId, uint matchId) public view returns (uint scoreTeamA, uint scoreTeamB){
+        Tournament storage p = tournaments[tournamentId];
+        Match storage m = p.matches[matchId];
+        return (m.bets[msg.sender].scoreTeamA, m.bets[msg.sender].scoreTeamB);
+    }
+
+
 }
