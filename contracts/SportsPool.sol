@@ -50,6 +50,8 @@ contract SportsPool is owned, mortal, priced{
     
     struct Match{
         uint id;
+        uint price;
+        uint players;
         uint idTeamA;//could be string
         uint idTeamB;//could be string
         int scoreTeamA;//initialized with -1 untill final score is known
@@ -59,9 +61,6 @@ contract SportsPool is owned, mortal, priced{
     
     struct Pool{
         uint id;
-        uint price;
-        uint players;
-        mapping (address => bool) registeredAddresses;
         mapping (uint => Match) matches;
         uint lastMatchId;
     }
@@ -81,41 +80,42 @@ contract SportsPool is owned, mortal, priced{
     // It is important to also provide the
     // `payable` keyword here, otherwise the function will
     // automatically reject all Ether sent to it.
-    function join(uint poolId) public payable costs(pools[poolId].price) {
-        Pool storage pool = pools[poolId] ;
-        pool.registeredAddresses[msg.sender] = true;
-        pool.players++;
+    function joinPoolMatch(uint poolId, uint matchId) public payable costs(pools[poolId].matches[matchId].price) {
+        Pool storage pool = pools[poolId];
+        pool.matches[matchId].players++;
         Join(msg.sender, msg.value);
     }
     
     //Creates new Pool with entry price
-    function addPool(uint price) public onlyOwner{
-        pools[lastPoolId] = Pool(lastPoolId,price,0,0);
+    function addPool() public onlyOwner{
+        pools[lastPoolId] = Pool({id:lastPoolId,lastMatchId:0});
         lastPoolId++;
     }
     
+    //figure out what data to ret here
     //Returns Pool by id
-    function getPool(uint poolId) public view returns(uint id,  uint price, uint players){
+    function getPool(uint poolId) public view returns(uint id){
         Pool storage p = pools[poolId];
-        return (p.id, p.price, p.players);
+        return (p.id);
     }
     
     //Returns total Pool prize ammount
-    function getPoolPrize(uint poolId) public view returns( uint prize){
+    function getMatchPrize(uint poolId, uint matchId) public view returns( uint prize){
         Pool storage p = pools[poolId];
-        return p.price* p.players;
+        Match storage m = p.matches[matchId];
+        return m.price* m.players;
     }
     
     //Divide pool funds amongst the winners
     function closePool(uint poolId) public onlyOwner{
-        //todo delete pool and pay top players
+        //todo delete pool or not to keep for history? and pay top players
         //todo event
     }
     
     //Add match to a pool 
-    function addMatch(uint poolId, uint teamAId, uint teamBId) public onlyOwner{
+    function addMatch(uint poolId,uint price, uint teamAId, uint teamBId) public onlyOwner{
         Pool storage p = pools[poolId];
-        p.matches[p.lastMatchId] = Match(p.lastMatchId,teamAId,teamBId,-1,-1);
+        p.matches[p.lastMatchId] = Match({id:p.lastMatchId,price:price,players:0,idTeamA:teamAId,idTeamB:teamBId,scoreTeamA:-1,scoreTeamB:-1});
         p.lastMatchId++;
         //todo even
     }
