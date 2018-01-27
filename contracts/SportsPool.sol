@@ -82,15 +82,13 @@ contract SportsPool is owned, mortal, priced, fractions{
         int scoreTeamB;//initialized with -1 until final score is known
         uint devFeeWei;//value must be in wei!!!
         mapping (uint => Bet) bets; //users bets
-        uint[] winners;
-        
     }
     
     struct Tournament{
         uint id;
-        uint lastMatchId;
+        uint nextMatchId;
         mapping (uint => Match) matches;
-        uint lastUserId;
+        uint nextUserId;
         mapping (address => uint) userIds; //address to userId mapping
     }
     
@@ -106,18 +104,20 @@ contract SportsPool is owned, mortal, priced, fractions{
      **/
     
     mapping (uint => Tournament) tournaments;
-    uint lastTournamentId = INITIAL_ID;
+    uint nextTournamentId = INITIAL_ID;
 
     /**
      *  Events
      **/
 
     event TournamentJoined(address indexed _from, uint _value);
-    event MatchAdded(uint tournamentId, uint matchId); //FIX ALL: must use address indexed _from, as first value
-    event MatchEdited(uint tournamentId, uint matchId);
-    event MatchEnded(uint tournamentId, uint matchId);
-    event BetAdded(uint tournamentId, uint matchId);
-    event BetEdited(uint tournamentId, uint matchId);
+    event TournamentJoinedWithBet(address indexed _from, uint _value, uint tournamentId, uint matchId);
+    event MatchAdded(address indexed _from, uint tournamentId, uint matchId);
+    event MatchEdited(address indexed _from, uint tournamentId, uint matchId);
+    event MatchEnded(address indexed _from, uint tournamentId, uint matchId);
+    event BetAdded(address indexed _from, uint tournamentId, uint matchId);
+    event BetEdited(address indexed _from, uint tournamentId, uint matchId);
+    event RequestedPayout(address indexed _from, uint tournamentId, uint matchId);
 
 
     /**
@@ -134,20 +134,20 @@ contract SportsPool is owned, mortal, priced, fractions{
     
     //Creates new Tournament with entry price
     function addTournament() public onlyOwner{
-        tournaments[lastTournamentId] = Tournament({id:lastTournamentId, lastMatchId:INITIAL_ID, lastUserId:INITIAL_ID});
-        lastTournamentId++;
+        tournaments[nextTournamentId] = Tournament({id:nextTournamentId, nextMatchId:INITIAL_ID, nextUserId:INITIAL_ID});
+        nextTournamentId++;
     }
     
     //Add match to a tournament
     function addMatch(uint tournamentId, uint teamAId, uint teamBId, uint priceWei, uint devFeeWei) public onlyOwner {
-        require(tournamentId>0 && tournamentId<lastTournamentId && priceWei>devFeeWei && teamAId != teamBId);
+        require(tournamentId>0 && tournamentId<nextTournamentId && priceWei>devFeeWei && teamAId != teamBId);
         // Data Modification
         Tournament storage t = tournaments[tournamentId];
-        t.matches[t.lastMatchId] = Match({id:t.lastMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei,winners:new uint[](0)});
-        t.lastMatchId++;
+        t.matches[t.nextMatchId] = Match({id:t.nextMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei});
+        t.nextMatchId++;
 
         // Event
-        MatchAdded(tournamentId, t.lastMatchId);
+        MatchAdded(msg.sender, tournamentId, t.nextMatchId);
     }
     
     // Edits an existing match
@@ -155,27 +155,27 @@ contract SportsPool is owned, mortal, priced, fractions{
         require( teamAId != teamBId);
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
-        require(m.scoreTeamA==-10&&m.scoreTeamB==-1);
+        require(m.scoreTeamA==-1&&m.scoreTeamB==-1);
         
         m.idTeamA = teamAId;
         m.idTeamB = teamBId;
         m.cancelled = cancelled;
 
         // Event
-        MatchEdited(tournamentId, matchId);
+        MatchEdited(msg.sender, tournamentId, matchId);
     }
     
     //Set final match scores
     function setMatchScores(uint tournamentId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
-        require(m.scoreTeamA==-1&&m.scoreTeamB==-1);
+        require(m.scoreTeamA>-1&&m.scoreTeamB>-1);
         
         m.scoreTeamA = scoreTeamA;
         m.scoreTeamB = scoreTeamB;
 
         // Event
-        MatchEnded(tournamentId, matchId);
+        MatchEnded(msg.sender, tournamentId, matchId);
     }
     
     /**
@@ -185,8 +185,8 @@ contract SportsPool is owned, mortal, priced, fractions{
     // Lets users join tournaments match pool
     function joinTournamentMatch(uint tournamentId, uint matchId) public payable costs(tournaments[tournamentId].matches[matchId].priceWei) {
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        t.userIds[msg.sender] = t.lastUserId;
-        ++t.lastUserId;
+        t.userIds[msg.sender] = t.nextUserId;
+        ++t.nextUserId;
         m.players++;
         TournamentJoined(msg.sender, msg.value);
     }
@@ -198,15 +198,12 @@ contract SportsPool is owned, mortal, priced, fractions{
         //todo stop if time is too close to match
         //consider block.timestamp
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        t.userIds[msg.sender] = t.lastUserId;
+        t.userIds[msg.sender] = t.nextUserId;
         m.players++;
-        ++t.lastUserId;
+        m.bets[t.nextUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+        ++t.nextUserId;
         // Event
-        TournamentJoined(msg.sender, msg.value);
-        
-        m.bets[t.lastUserId-1] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
-        // Event
-        BetAdded(tournamentId, matchId);
+        TournamentJoinedWithBet(msg.sender, msg.value, tournamentId, matchId);
     }
     
     //possibly not needed anymore
@@ -217,11 +214,11 @@ contract SportsPool is owned, mortal, priced, fractions{
         //consider block.timestamp
         // Data Modification
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        require(m.scoreTeamA>-1&&m.scoreTeamB>-1);//match closed
-        m.bets[t.lastUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
-        ++t.lastUserId;
+        require(m.scoreTeamA==-1&&m.scoreTeamB==-1);//match open
+        m.bets[t.nextUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+        ++t.nextUserId;
         // Event
-        BetAdded(tournamentId, matchId);
+        BetAdded(msg.sender, tournamentId, matchId);
     }
 
     // Edit an existing Bet for a given Match
@@ -232,33 +229,27 @@ contract SportsPool is owned, mortal, priced, fractions{
         //todo consider batching externally or consider limiting number of allowed changes
         // Data Modification
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
-        require(m.scoreTeamA>-1&&m.scoreTeamB>-1);//match closed
+        require(m.scoreTeamA==-1&&m.scoreTeamB==-1);//match open
         b.scoreTeamA = scoreTeamA;
         b.scoreTeamB = scoreTeamB;
 
         // Event
-        BetEdited(tournamentId, matchId);
+        BetEdited(msg.sender, tournamentId, matchId);
     }
-    
+
     //user request for payout
     function getPayout(uint tournamentId, uint matchId) public {
-        if(isWinner(tournamentId, matchId)){
-            require(sendTo(msg.sender,getMatchPrize(tournamentId,matchId)/getWinners(tournamentId,matchId).length));
-        }
+        // todo - figure out how to tell the back end to check
+        // todo - for now i created an event, but maybe when the user clicks, the backend can do the giveUserPayout call directly
+        // todo - This is done only to get the user address (back end will verify if its winner etc)
+        RequestedPayout(msg.sender, tournamentId, matchId);
     }
-    
-    //returns array of winners userIds
-    function getWinners(uint tournamentId, uint matchId) public returns(uint[] ){ //todo investigate more efficient ways
-        var (t,m) = getTournamentMatch(tournamentId, matchId);
-        require(m.scoreTeamA>=0&&m.scoreTeamB>=0);
-        if(m.winners.length>0)
-            return m.winners;
-        for (uint userId= INITIAL_ID; userId < t.lastUserId; userId++) {
-            if(isWinner(tournamentId, matchId, userId)){
-                m.winners.push(userId);
-            }
-        }
-        return m.winners;
+
+    // Give a specific user the payout deserved
+    // Todo - Backend will check isWinner, getMatchPrize, getNumberOfWinners based on the address, tournamedid and matchid from getPayout event
+    // Todo we can even move the division outside of the blockchain and make it even more gas efficient
+    function giveUserPayout(address user, uint prize, uint numWinners) public onlyOwner{
+        require(sendTo(user, prize / numWinners));
     }
 
     /**
@@ -266,11 +257,40 @@ contract SportsPool is owned, mortal, priced, fractions{
     *  Data read (no gas fees)
     **/
 
+    // Gets how many winners are available
+    function getNumberOfWinners(uint tournamentId, uint matchId) public view returns(uint){
+        var (t,m) = getTournamentMatch(tournamentId, matchId);
+        require(m.scoreTeamA>=0&&m.scoreTeamB>=0); // match closed
+        uint numWinners = 0;
+        for (uint userId= INITIAL_ID; userId < t.nextUserId; userId++) {
+            if(isWinner(tournamentId, matchId, userId)){
+                numWinners++;
+            }
+        }
+        return numWinners;
+    }
+
+    //returns array of winners userIds
+    function getWinners(uint tournamentId, uint matchId) public view returns(uint[] ){ //todo investigate more efficient ways
+        var (t,m) = getTournamentMatch(tournamentId, matchId);
+        require(m.scoreTeamA>=0&&m.scoreTeamB>=0);
+        uint numWinners = getNumberOfWinners(tournamentId, matchId);
+        uint[] memory winners = new uint[](numWinners);
+        uint index = 0;
+        for (uint userId= INITIAL_ID; userId < t.nextUserId; userId++) {
+            if(isWinner(tournamentId, matchId, userId)){
+                winners[index++] = userId;
+            }
+        }
+        return winners;
+    }
+
+
     //Returns Tournament by id
-    function getTournament(uint tournamentId) public view returns(uint id,uint lastMatchId, uint lastUserId){
+    function getTournament(uint tournamentId) public view returns(uint id,uint nextMatchId, uint nextUserId){
         Tournament storage t = tournaments[tournamentId];
-        require(t.id>0 && t.id<lastTournamentId);
-        return (t.id,t.lastMatchId-1,t.lastUserId-1);
+        require(t.id>0 && t.id<nextTournamentId);
+        return (t.id,t.nextMatchId-1,t.nextUserId-1);
     }
     
     //Returns total Tournament prize amount
@@ -303,6 +323,14 @@ contract SportsPool is owned, mortal, priced, fractions{
         }
         return false;
     }
+
+    // Gets a specific match for a specific tournament
+    function getMatch(uint tournamentId, uint matchId) public view returns(uint, uint, uint, uint, bool, int, int, uint){
+        Tournament storage t = tournaments[tournamentId];
+        Match storage m = t.matches[matchId];
+        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId );
+        return (m.priceWei, m.players, m.idTeamA, m.idTeamB, m.cancelled, m.scoreTeamA, m.scoreTeamB, m.devFeeWei);
+    }
     
     /**
      *  Private Functions
@@ -312,14 +340,14 @@ contract SportsPool is owned, mortal, priced, fractions{
      function getTournamentMatch(uint tournamentId, uint matchId)private view returns(Tournament storage, Match storage){
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
-        require(t.id>0 && t.id<lastTournamentId && m.id>0 && m.id<t.lastMatchId );
+        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId );
         return (t,m);
      }
      
      //get tournament and match touple
      function getTournamentMatchBet(uint tournamentId, uint matchId, uint userId)private view returns(Tournament storage, Match storage, Bet storage){
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        require( userId>0 && userId<t.lastUserId);
+        require( userId>0 && userId<t.nextUserId);
         return (t,m,m.bets[userId]);
      }
      
@@ -327,13 +355,30 @@ contract SportsPool is owned, mortal, priced, fractions{
      function getTournamentMatchBet(uint tournamentId, uint matchId)private view returns(Tournament storage, Match storage, Bet storage){
         var (t,m) = getTournamentMatch(tournamentId,matchId);
         uint userId = t.userIds[msg.sender];
-        require( userId>0 && userId<t.lastUserId);
+        require( userId>0 && userId<t.nextUserId);
         return (t,m,m.bets[userId]);
      }
-    
+
+    //get tournament and match touple
+    function getTournamentMatchBet(uint tournamentId, uint matchId, address userAddress)private view returns(Tournament storage, Match storage, Bet storage){
+        var (t,m) = getTournamentMatch(tournamentId,matchId);
+        uint userId = t.userIds[userAddress];
+        require( userId>0 && userId<t.nextUserId);
+        return (t,m,m.bets[userId]);
+    }
+
     // Gets winner status depending on users bets
     function isWinner(uint tournamentId, uint matchId, uint userId) private view returns(bool){
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId,userId);
+        if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
+            return true;
+        }
+        return false;
+    }
+
+    // Gets winner status depending on users bets
+    function isWinner(uint tournamentId, uint matchId, address userAddress) private view returns(bool){
+        var (,m,b) = getTournamentMatchBet(tournamentId,matchId,userAddress);
         if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
             return true;
         }
