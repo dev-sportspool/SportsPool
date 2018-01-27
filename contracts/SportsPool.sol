@@ -184,9 +184,8 @@ contract SportsPool is owned, mortal, priced, fractions{
     **/
     // Lets users join tournaments match pool
     function joinTournamentMatch(uint tournamentId, uint matchId) public payable costs(tournaments[tournamentId].matches[matchId].priceWei) {
-        var (t,m) = getTournamentMatch(tournamentId,matchId);
-        t.userIds[msg.sender] = t.lastUserId;
-        ++t.lastUserId;
+        var (,m) = getTournamentMatch(tournamentId,matchId);
+        
         m.players++;
         TournamentJoined(msg.sender, msg.value);
     }
@@ -198,13 +197,11 @@ contract SportsPool is owned, mortal, priced, fractions{
         //todo stop if time is too close to match
         //consider block.timestamp
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        t.userIds[msg.sender] = t.lastUserId;
-        m.players++;
-        ++t.lastUserId;
-        // Event
-        TournamentJoined(msg.sender, msg.value);
         
-        m.bets[t.lastUserId-1] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+        m.players++;
+        TournamentJoined(msg.sender, msg.value);
+        m.bets[t.lastUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+        ++t.lastUserId;
         // Event
         BetAdded(tournamentId, matchId);
     }
