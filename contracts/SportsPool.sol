@@ -28,17 +28,11 @@ contract mortal is owned {
 }
 
 contract priced {
-    event CostError(
-        address indexed _from,
-        uint _value
-    );
+
     // Modifiers can receive arguments:
     modifier costs(uint price) {
-        if (msg.value == price) {
-            _;
-        }else{
-            CostError(msg.sender, msg.value);
-        }
+        require(msg.value == price);
+        _;
     }
 }
 
@@ -87,36 +81,39 @@ contract SportsPool is owned, mortal, priced, fractions{
         int scoreTeamA;//initialized with -1 until final score is known
         int scoreTeamB;//initialized with -1 until final score is known
         uint devFeeWei;//value must be in wei!!!
-        uint lastUserId;
-        mapping (address => uint) userIds; //address to userId mapping
         mapping (uint => Bet) bets; //users bets
+        uint[] winners;
         
     }
     
     struct Tournament{
         uint id;
-        mapping (uint => Match) matches;
         uint lastMatchId;
+        mapping (uint => Match) matches;
+        uint lastUserId;
+        mapping (address => uint) userIds; //address to userId mapping
     }
+    
+    /**
+     *  Constants
+     **/
+    
+    uint constant INITIAL_ID = 1;
+    
 
     /**
      *  Storage
      **/
     
     mapping (uint => Tournament) tournaments;
-    uint lastTournamentId;
-    
-    /**
-     *  Constants
-     **/
-     
+    uint lastTournamentId = INITIAL_ID;
 
     /**
      *  Events
      **/
 
-    event Join(address indexed _from, uint _value);
-    event MatchAdded(uint tournamentId, uint matchId);
+    event TournamentJoined(address indexed _from, uint _value);
+    event MatchAdded(uint tournamentId, uint matchId); //FIX ALL: must use address indexed _from, as first value
     event MatchEdited(uint tournamentId, uint matchId);
     event MatchEnded(uint tournamentId, uint matchId);
     event BetAdded(uint tournamentId, uint matchId);
@@ -126,61 +123,40 @@ contract SportsPool is owned, mortal, priced, fractions{
     /**
      *  Public Functions
      **/
+     
+        /**
+         *  Owner Functions
+         **/
 
     function SportsPool()fractions(8) public {
         //todo: setup
     }
     
-    // It is important to also provide the
-    // `payable` keyword here, otherwise the function will
-    // automatically reject all Ether sent to it.
-    function joinTournamentMatch(uint tournamentId, uint matchId) public payable costs(tournaments[tournamentId].matches[matchId].priceWei) {
-        Tournament storage tournament = tournaments[tournamentId];
-        tournament.matches[matchId].players++;
-        Join(msg.sender, msg.value);
-    }
-    
     //Creates new Tournament with entry price
     function addTournament() public onlyOwner{
-        tournaments[lastTournamentId] = Tournament({id:lastTournamentId, lastMatchId:0});
+        tournaments[lastTournamentId] = Tournament({id:lastTournamentId, lastMatchId:INITIAL_ID, lastUserId:INITIAL_ID});
         lastTournamentId++;
     }
     
-    //figure out what data to ret here
-    //Returns Tournament by id
-    function getTournament(uint tournamentId) public view returns(uint id){
-        Tournament storage t = tournaments[tournamentId];
-        return (t.id);
-    }
-    
-    //Returns total Tournament prize amount
-    function getMatchPrize(uint tournamentId, uint matchId) public view returns (uint prize){
-        Match storage m = getMatch(tournamentId, matchId);
-
-        if (m.cancelled)
-            return 0;
-        else
-            return (m.priceWei - m.devFeeWei) * m.players;
-    }
-    
     //Add match to a tournament
-    function addMatch(uint tournamentId, uint priceWei, uint teamAId, uint teamBId, uint devFeeWei) public onlyOwner {
-        //todo validate if devfee is less then priceWei
-        //todo validate so that team ids are different?
+    function addMatch(uint tournamentId, uint teamAId, uint teamBId, uint priceWei, uint devFeeWei) public onlyOwner {
+        require(tournamentId>0 && tournamentId<lastTournamentId && priceWei>devFeeWei && teamAId != teamBId);
         // Data Modification
         Tournament storage t = tournaments[tournamentId];
-        t.matches[t.lastMatchId] = Match({id:t.lastMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei, lastUserId:0});
+        t.matches[t.lastMatchId] = Match({id:t.lastMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei,winners:new uint[](0)});
         t.lastMatchId++;
 
         // Event
         MatchAdded(tournamentId, t.lastMatchId);
     }
-
+    
     // Edits an existing match
-    function editMatch(uint tournamentId, uint matchId, uint priceWei, uint teamAId, uint teamBId, bool cancelled) public onlyOwner {
+    function editMatch(uint tournamentId, uint matchId, uint teamAId, uint teamBId, bool cancelled) public onlyOwner {
+        require( teamAId != teamBId);
         // Data Modification
-        Match storage m = getMatch(tournamentId, matchId);
-        m.priceWei = priceWei;
+        var (,m) = getTournamentMatch(tournamentId, matchId);
+        require(m.scoreTeamA==-10&&m.scoreTeamB==-1);
+        
         m.idTeamA = teamAId;
         m.idTeamB = teamBId;
         m.cancelled = cancelled;
@@ -192,131 +168,181 @@ contract SportsPool is owned, mortal, priced, fractions{
     //Set final match scores
     function setMatchScores(uint tournamentId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
         // Data Modification
-        Match storage m = getMatch(tournamentId, matchId);
+        var (,m) = getTournamentMatch(tournamentId, matchId);
+        require(m.scoreTeamA==-1&&m.scoreTeamB==-1);
+        
         m.scoreTeamA = scoreTeamA;
         m.scoreTeamB = scoreTeamB;
-
-        // todo - pay users?
-        //msg.sender.transfer(getMatchPrize(tournamentId,matchId)/numberOfWinners);
-        //-- or maybe we need a function for user to claim their winnings as to avoid auto paying?
-        
-        //what if last match? auto closeTournament?
 
         // Event
         MatchEnded(tournamentId, matchId);
     }
-
+    
+    /**
+    *  Player Functions
+    *  Data Write (gas fees apply, enusre efficency and validity of data) 
+    **/
+    // Lets users join tournaments match pool
+    function joinTournamentMatch(uint tournamentId, uint matchId) public payable costs(tournaments[tournamentId].matches[matchId].priceWei) {
+        var (,m) = getTournamentMatch(tournamentId,matchId);
+        
+        m.players++;
+        TournamentJoined(msg.sender, msg.value);
+    }
+    
+    //Variation of joinTournamentMatch() with addBet() to save on gas
+    function joinTournamentMatchWithBet( uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB) public payable costs(tournaments[tournamentId].matches[matchId].priceWei){
+        require(scoreTeamA>=0 && scoreTeamB>=0);
+        
+        //todo stop if time is too close to match
+        //consider block.timestamp
+        var (t,m) = getTournamentMatch(tournamentId,matchId);
+        
+        m.players++;
+        TournamentJoined(msg.sender, msg.value);
+        m.bets[t.lastUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+        ++t.lastUserId;
+        // Event
+        BetAdded(tournamentId, matchId);
+    }
+    
+    //possibly not needed anymore
     // Add Bet to an existing match
     function addBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB) public {
-        //todo validate scores to be >0
+        require(scoreTeamA>=0 && scoreTeamB>=0);
         //todo stop if time is too close to match
+        //consider block.timestamp
         // Data Modification
-        Match storage m = getMatch(tournamentId, matchId);
-        m.userIds[msg.sender];
-        m.bets[m.lastUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
-        ++m.lastUserId;
+        var (t,m) = getTournamentMatch(tournamentId,matchId);
+        require(m.scoreTeamA>-1&&m.scoreTeamB>-1);//match closed
+        m.bets[t.lastUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+        ++t.lastUserId;
         // Event
         BetAdded(tournamentId, matchId);
     }
 
     // Edit an existing Bet for a given Match
     function editBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB) public {
-        //todo validate scores to be >0
+        require(scoreTeamA>=0 && scoreTeamB>=0);
         //todo stop if time is too close to match or passed
+        //consider block.timestamp
         //todo consider batching externally or consider limiting number of allowed changes
         // Data Modification
-        Match storage m = getMatch(tournamentId, matchId);
-        uint userId = m.userIds[msg.sender];
-        Bet storage b = m.bets[userId];
+        var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
+        require(m.scoreTeamA>-1&&m.scoreTeamB>-1);//match closed
         b.scoreTeamA = scoreTeamA;
         b.scoreTeamB = scoreTeamB;
 
         // Event
         BetEdited(tournamentId, matchId);
     }
+    
+    //user request for payout
+    function getPayout(uint tournamentId, uint matchId) public {
+        if(isWinner(tournamentId, matchId)){
+            require(sendTo(msg.sender,getMatchPrize(tournamentId,matchId)/getWinners(tournamentId,matchId).length));
+        }
+    }
+    
+    //returns array of winners userIds
+    function getWinners(uint tournamentId, uint matchId) public returns(uint[] ){ //todo investigate more efficient ways
+        var (t,m) = getTournamentMatch(tournamentId, matchId);
+        require(m.scoreTeamA>=0&&m.scoreTeamB>=0);
+        if(m.winners.length>0)
+            return m.winners;
+        for (uint userId= INITIAL_ID; userId < t.lastUserId; userId++) {
+            if(isWinner(tournamentId, matchId, userId)){
+                m.winners.push(userId);
+            }
+        }
+        return m.winners;
+    }
+
+    /**
+    *  Player Functions
+    *  Data read (no gas fees)
+    **/
+
+    //Returns Tournament by id
+    function getTournament(uint tournamentId) public view returns(uint id,uint lastMatchId, uint lastUserId){
+        Tournament storage t = tournaments[tournamentId];
+        require(t.id>0 && t.id<lastTournamentId);
+        return (t.id,t.lastMatchId-1,t.lastUserId-1);
+    }
+    
+    //Returns total Tournament prize amount
+    function getMatchPrize(uint tournamentId, uint matchId) public view returns (uint prize){
+        var (,m) = getTournamentMatch(tournamentId, matchId);
+
+        if (m.cancelled)
+            return 0;
+        else
+            return (m.priceWei - m.devFeeWei) * m.players;
+    }
 
     // Checks the Bet status of a match for a specific user
     function getBetScores(uint tournamentId, uint matchId) public view returns (int scoreTeamA, int scoreTeamB){
-        Bet storage b = getBet(tournamentId, matchId);
+        var (,,b) = getTournamentMatchBet(tournamentId,matchId);
         return (b.scoreTeamA, b.scoreTeamB);
     }
 
     // Get developer developer fee
     function getDeveloperFee(uint tournamentId, uint matchId)public view returns(uint){
-        return getMatch(tournamentId, matchId).devFeeWei;
+        var (,m) = getTournamentMatch(tournamentId, matchId);
+        return m.devFeeWei;
     }
     
-    // Gets points for a users bets
-    function getPoints(uint tournamentId, uint matchId) public view returns(uint){
-        Match storage m = getMatch(tournamentId, matchId);
-        Bet storage b =m.bets[m.userIds[msg.sender]];
-        uint points = 0;
-        if(b.scoreTeamA==m.scoreTeamA){
-            ++points;
-        }
-        if(b.scoreTeamB==m.scoreTeamB){
-            ++points;
-        }
+    // Gets winner status depending on users bets
+    function isWinner(uint tournamentId, uint matchId) public view returns(bool){
+        var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
         if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
-            points+=3;
+            return true;
         }
-        return points;
-    }
-    
-    //gets callers rank
-    function getRank(uint tournamentId, uint matchId) public view returns(uint){
-        //todo: what if match not closed? validate -1 match score?
-        Match storage m = getMatch(tournamentId, matchId);
-        uint points =getPoints(tournamentId, matchId);
-        uint userId = m.userIds[msg.sender];
-        uint usersWithMorePoints =0;
-        for (uint i = 0; i < m.lastUserId; i++) {
-            if(i!=userId){
-                uint otherUserPoints = getPoints(tournamentId, matchId, i);
-                if(otherUserPoints>points){
-                    ++usersWithMorePoints;
-                }
-            }
-        }
-        return usersWithMorePoints+1;
+        return false;
     }
     
     /**
      *  Private Functions
      **/
      
-     //get match utility function, consider making public
-     function getMatch(uint tournamentId, uint matchId)private view returns(Match storage){
-        return tournaments[tournamentId].matches[matchId];
+     //get tournament and match touple
+     function getTournamentMatch(uint tournamentId, uint matchId)private view returns(Tournament storage, Match storage){
+        Tournament storage t = tournaments[tournamentId];
+        Match storage m = t.matches[matchId];
+        require(t.id>0 && t.id<lastTournamentId && m.id>0 && m.id<t.lastMatchId );
+        return (t,m);
      }
      
-     //get bet utility function, consider making public
-     function getBet(uint tournamentId, uint matchId)private view returns(Bet storage){
-         Match storage m = getMatch(tournamentId,matchId);
-        return m.bets[m.userIds[msg.sender]];
+     //get tournament and match touple
+     function getTournamentMatchBet(uint tournamentId, uint matchId, uint userId)private view returns(Tournament storage, Match storage, Bet storage){
+        var (t,m) = getTournamentMatch(tournamentId,matchId);
+        require( userId>0 && userId<t.lastUserId);
+        return (t,m,m.bets[userId]);
      }
      
-     //get bet utility function, consider making public
-     function getBet(uint tournamentId, uint matchId, uint userId)private view returns(Bet storage){
-         Match storage m = getMatch(tournamentId,matchId);
-        return m.bets[userId];
+     //get tournament and match touple
+     function getTournamentMatchBet(uint tournamentId, uint matchId)private view returns(Tournament storage, Match storage, Bet storage){
+        var (t,m) = getTournamentMatch(tournamentId,matchId);
+        uint userId = t.userIds[msg.sender];
+        require( userId>0 && userId<t.lastUserId);
+        return (t,m,m.bets[userId]);
      }
-     
-     // Gets points for a users bets
-    function getPoints(uint tournamentId, uint matchId, uint userId) private view returns(uint){
-        Match storage m = getMatch(tournamentId, matchId);
-        Bet storage b =m.bets[userId];
-        uint points = 0;
-        if(b.scoreTeamA==m.scoreTeamA){ //what if match score is -1 and we cast to uint?
-            ++points;
-        }
-        if(b.scoreTeamB==m.scoreTeamB){
-            ++points;
-        }
+    
+    // Gets winner status depending on users bets
+    function isWinner(uint tournamentId, uint matchId, uint userId) private view returns(bool){
+        var (,m,b) = getTournamentMatchBet(tournamentId,matchId,userId);
         if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
-            points+=3;
+            return true;
         }
-        return points;
+        return false;
+    }
+    
+    function sendTo(address receiver, uint amount) private returns(bool){
+        if (amount == 0  ){ // TODO: for production add: || receiver == address(this)
+            return false;
+        }else{
+            return receiver.send(amount);
+        }
     }
 
 }
