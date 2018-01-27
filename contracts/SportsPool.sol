@@ -48,15 +48,15 @@ contract fractions {
             PercentError(msg.sender, msg.value);
         }
     }
-    uint percision;
+    uint precision;
     function fractions(uint decimalPlaces) public {
-        percision = decimalPlaces;
+        precision = decimalPlaces;
     }
     function asFloat(uint num) public view returns(uint){
-        return num*10**(percision+1);
+        return num*10**(precision+1);
     }
-    function getPercision() public view returns(uint){
-        return percision;
+    function getPrecision() public view returns(uint){
+        return precision;
     }
 }
 
