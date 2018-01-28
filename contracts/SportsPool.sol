@@ -244,15 +244,17 @@ contract SportsPool is owned, mortal, priced, fractions{
         // todo - look into breaking apart the processing on the back end
         
 		//todo - validate that user can't call this multiple times
-		if(isWinner(tournamentId, matchId)){
+		bool winner = isWinner(tournamentId, matchId);
+		require(winner);
+		if(winner){
 			uint prize = getMatchPrize(tournamentId, matchId);
 			uint numWinners = getNumberOfWinners(tournamentId,matchId);
 			uint payout = prize / numWinners;
 			if(this.balance<payout){
-				msg.sender.transfer(this.balance);			
+				msg.sender.send(this.balance);	 //switch to transfer		
 				InsufficientBalance(msg.sender, tournamentId, matchId, this.balance);
 			}else{
-				msg.sender.transfer(payout);
+				msg.sender.send(payout);  //switch to transfer	
 				RequestedPayout(msg.sender, tournamentId, matchId, payout);
 			}
 		}
