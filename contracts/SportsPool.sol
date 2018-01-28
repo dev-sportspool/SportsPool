@@ -117,7 +117,8 @@ contract SportsPool is owned, mortal, priced, fractions{
     event MatchEnded(address indexed _from, uint tournamentId, uint matchId);
     event BetAdded(address indexed _from, uint tournamentId, uint matchId);
     event BetEdited(address indexed _from, uint tournamentId, uint matchId);
-    event RequestedPayout(address indexed _from, uint tournamentId, uint matchId);
+    event RequestedPayout(address indexed _from, uint tournamentId, uint matchId, uint prize);
+	event InsufficientBalance(address indexed _from, uint tournamentId, uint matchId, uint balance);
 
 
     /**
@@ -169,7 +170,7 @@ contract SportsPool is owned, mortal, priced, fractions{
     function setMatchScores(uint tournamentId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
-        require(m.scoreTeamA>-1&&m.scoreTeamB>-1);
+        require(scoreTeamA>-1&&scoreTeamB>-1); //validate new scores
         
         m.scoreTeamA = scoreTeamA;
         m.scoreTeamB = scoreTeamB;
@@ -238,11 +239,23 @@ contract SportsPool is owned, mortal, priced, fractions{
     }
 
     //user request for payout
-    function getPayout(uint tournamentId, uint matchId) public {
+    function getPayout(uint tournamentId, uint matchId) public payable{
         // todo - figure out how to tell the back end to check
-        // todo - for now i created an event, but maybe when the user clicks, the backend can do the giveUserPayout call directly
-        // todo - This is done only to get the user address (back end will verify if its winner etc)
-        RequestedPayout(msg.sender, tournamentId, matchId);
+        // todo - look into breaking apart the processing on the back end
+        
+		//todo - validate that user can't call this multiple times
+		if(isWinner(tournamentId, matchId)){
+			uint prize = getMatchPrize(tournamentId, matchId);
+			uint numWinners = getNumberOfWinners(tournamentId,matchId);
+			uint payout = prize / numWinners;
+			if(this.balance<payout){
+				msg.sender.transfer(this.balance);			
+				InsufficientBalance(msg.sender, tournamentId, matchId, this.balance);
+			}else{
+				msg.sender.transfer(payout);
+				RequestedPayout(msg.sender, tournamentId, matchId, payout);
+			}
+		}
     }
 
     // Give a specific user the payout deserved
@@ -308,12 +321,6 @@ contract SportsPool is owned, mortal, priced, fractions{
         var (,,b) = getTournamentMatchBet(tournamentId,matchId);
         return (b.scoreTeamA, b.scoreTeamB);
     }
-
-    // Get developer developer fee
-    function getDeveloperFee(uint tournamentId, uint matchId)public view returns(uint){
-        var (,m) = getTournamentMatch(tournamentId, matchId);
-        return m.devFeeWei;
-    }
     
     // Gets winner status depending on users bets
     function isWinner(uint tournamentId, uint matchId) public view returns(bool){
@@ -325,11 +332,11 @@ contract SportsPool is owned, mortal, priced, fractions{
     }
 
     // Gets a specific match for a specific tournament
-    function getMatch(uint tournamentId, uint matchId) public view returns(uint, uint, uint, uint, bool, int, int, uint){
+    function getMatch(uint tournamentId, uint matchId) public view returns(uint, uint, uint, uint, uint, bool, int, int, uint){
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
         require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId );
-        return (m.priceWei, m.players, m.idTeamA, m.idTeamB, m.cancelled, m.scoreTeamA, m.scoreTeamB, m.devFeeWei);
+        return (m.id, m.priceWei, m.players, m.idTeamA, m.idTeamB, m.cancelled, m.scoreTeamA, m.scoreTeamB, m.devFeeWei);
     }
     
     /**
