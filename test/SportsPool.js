@@ -1,5 +1,5 @@
 var SportsPool = artifacts.require("SportsPool");
-var ETH_PRICE = 1240.50;
+var ETH_PRICE = 1182.50;
 var GAS_PRICE = 20000000000; // more or less constant. can be checked via SportsPool.web3.eth.getGasPrice(function(error, result){});
 
 contract('SportsPool', function(accounts){

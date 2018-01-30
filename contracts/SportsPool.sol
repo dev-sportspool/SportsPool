@@ -110,12 +110,10 @@ contract SportsPool is owned, mortal, priced, fractions{
      *  Events
      **/
 
-    event TournamentJoined(address indexed _from, uint _value);
     event TournamentJoinedWithBet(address indexed _from, uint _value, uint tournamentId, uint matchId);
     event MatchAdded(address indexed _from, uint tournamentId, uint matchId);
     event MatchEdited(address indexed _from, uint tournamentId, uint matchId);
     event MatchEnded(address indexed _from, uint tournamentId, uint matchId);
-    event BetAdded(address indexed _from, uint tournamentId, uint matchId);
     event BetEdited(address indexed _from, uint tournamentId, uint matchId);
     event RequestedPayout(address indexed _from, uint tournamentId, uint matchId, uint prize);
 	event InsufficientBalance(address indexed _from, uint tournamentId, uint matchId, uint balance);
@@ -183,14 +181,6 @@ contract SportsPool is owned, mortal, priced, fractions{
     *  Player Functions
     *  Data Write (gas fees apply, enusre efficency and validity of data) 
     **/
-    // Lets users join tournaments match pool
-    function joinTournamentMatch(uint tournamentId, uint matchId) public payable costs(tournaments[tournamentId].matches[matchId].priceWei) {
-        var (t,m) = getTournamentMatch(tournamentId,matchId);
-        t.userIds[msg.sender] = t.nextUserId;
-        ++t.nextUserId;
-        m.players++;
-        TournamentJoined(msg.sender, msg.value);
-    }
     
     //Variation of joinTournamentMatch() with addBet() to save on gas
     function joinTournamentMatchWithBet( uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB) public payable costs(tournaments[tournamentId].matches[matchId].priceWei){
@@ -199,27 +189,17 @@ contract SportsPool is owned, mortal, priced, fractions{
         //todo stop if time is too close to match
         //consider block.timestamp
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        t.userIds[msg.sender] = t.nextUserId;
+        uint userId = t.userIds[msg.sender];
+        if (userId == 0) {
+            t.userIds[msg.sender] = t.nextUserId;
+            userId = t.nextUserId;
+            ++t.nextUserId;
+        }
         m.players++;
-        m.bets[t.nextUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
-        ++t.nextUserId;
+        m.bets[userId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+
         // Event
         TournamentJoinedWithBet(msg.sender, msg.value, tournamentId, matchId);
-    }
-    
-    //possibly not needed anymore
-    // Add Bet to an existing match
-    function addBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB) public {
-        require(scoreTeamA>=0 && scoreTeamB>=0);
-        //todo stop if time is too close to match
-        //consider block.timestamp
-        // Data Modification
-        var (t,m) = getTournamentMatch(tournamentId,matchId);
-        require(m.scoreTeamA==-1&&m.scoreTeamB==-1);//match open
-        m.bets[t.nextUserId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
-        ++t.nextUserId;
-        // Event
-        BetAdded(msg.sender, tournamentId, matchId);
     }
 
     // Edit an existing Bet for a given Match
