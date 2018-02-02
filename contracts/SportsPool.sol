@@ -226,7 +226,7 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
         public inTime(tournaments[tournamentId].matches[matchId].betEndTime)
     {
         require(scoreTeamA>=0 && scoreTeamB>=0);
-        //todo consider batching externally or consider limiting number of allowed changes
+
         // Data Modification
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
         require(m.scoreTeamA==-1&&m.scoreTeamB==-1);//match open
@@ -337,7 +337,16 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
         return false;
     }
 
-    // Gets a specific match for a specific tournament
+    // Gets user's bet for a specific match of a specific tournament
+    function getMatchBet(uint tournamentId, uint matchId) public view returns(int, int){
+        Tournament storage t = tournaments[tournamentId];
+        Match storage m = t.matches[matchId];
+        uint userId = t.userIds[msg.sender];
+        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId && userId>0 && userId<t.nextUserId );
+        return (m.bets[userId].scoreTeamA, m.bets[userId].scoreTeamB);
+    }
+
+    // Gets a specific match of a specific tournament
     function getMatch(uint tournamentId, uint matchId) public view returns(uint, uint, uint, uint, uint, bool, int, int, uint, uint){
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
