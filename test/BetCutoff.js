@@ -6,34 +6,31 @@ contract('SportsPool', function(accounts){
 	var owner = accounts[0]; //is owner of contract by default in truffle
 	const COST = dollarToWei(20.00);
 	const DEV_FEE = dollarToWei(4.00);
-	const BET_END_TIME = 25175475600; // Really future timestamp to allow bets (bet cutoff tested in BetCutoff.js)
+	const BET_END_TIME = 1517551190; //  Modify this before running the test (https://www.epochconverter.com/)
 	const TEAM_A_ID = 111;
 	const TEAM_B_ID = 200;
 	const tournamentId = 1;
 	const matchId = 1;
 	
-	//TODO: make for loop for testing multiple tournaments
+	// Create tournament
 	testTournament(owner,tournamentId);
-	//TODO: make for loop for testing multiple matches
+
+	// Create Match
+	// Using real time epoch should fail even addMatch (we have require check to avoid adding passed time matches)
+	// To just test join match + bet + edit, use epoch >15min than now/real time
 	testMatch(owner,player,tournamentId, matchId,TEAM_A_ID,TEAM_B_ID,COST,DEV_FEE,BET_END_TIME);
-	
-	console.log("================FOR EACH PLAYER================");
-	for(var i=1; i<9; i++){ //starting from 1 as 0 is owner of contract, 8 players total
-	
-		var player = accounts[i];
-		var isWinner = i % 2 == 0; //odd players are winner , odd are losers
-		const TEAM_A_FINAL_SCORE = 2;
-		const TEAM_B_FINAL_SCORE = 3;
-		var playerTeamAPrediction = isWinner?TEAM_A_FINAL_SCORE:1;
-		var playerTeamBPrediction = isWinner?TEAM_B_FINAL_SCORE:2;
-		console.log(accounts[i]);
-		console.log("Will "+(isWinner?"":"not ")+"be a winner");
-		
-		testJoinBet(owner,player,tournamentId,matchId,playerTeamAPrediction,playerTeamBPrediction,COST);
-		testMatchSetScores(owner, player,tournamentId,matchId,TEAM_A_FINAL_SCORE,TEAM_B_FINAL_SCORE);
-		testWinner(owner, player, tournamentId,matchId,isWinner);
-		testPayout(owner, player, tournamentId,matchId,isWinner);
-	}
+
+	//Set user
+	var player = accounts[1];
+
+	// User joins and places a bet
+	testJoinBet(owner,player,tournamentId,matchId,1,2,COST);
+
+	// User edits a bet
+	testEditBet(owner,player,tournamentId,matchId,4,7);
+
+	// Check Block time
+	testBlockTime(player);
 });
 
 function testTournament(owner,tournamentId){
@@ -87,76 +84,35 @@ function testJoinBet(owner, player, tournamentId,matchId,playerTeamAPrediction,p
 	});
 }
 
-function testMatchSetScores(owner, player, tournamentId,matchId,TEAM_A_FINAL_SCORE,TEAM_B_FINAL_SCORE){
-	it("Set match scores", function(){
+function testEditBet(owner, player, tournamentId,matchId,playerTeamAPrediction,playerTeamBPrediction){
+	it("Edit bet", function(){
+		console.log("\n================PLAYER "+player+"==================");
 		var meta ;
 		return SportsPool.deployed().then(function(instance) {
 			meta = instance;
-			return meta.setMatchScores(tournamentId,matchId,TEAM_A_FINAL_SCORE,TEAM_B_FINAL_SCORE,{from: owner});
+			return meta.editBet(tournamentId,matchId,playerTeamAPrediction,playerTeamBPrediction,{from: player});
 		}).then(function(result){
-			logGasCost("Setting match scores gas cost",result);
-			return meta.getMatch.call(tournamentId,matchId,{from: player});
+			logGasCost("Editing match bet and making bet gas cost",result);
+			return meta.getBetScores.call(tournamentId,matchId,{from: player});
 		}).then(function(result){
-			logResponse("Get Match #1",result);
-			assert.equal(TEAM_A_FINAL_SCORE,result[6],"Final score for Team A should be "+TEAM_A_FINAL_SCORE);
-			assert.equal(TEAM_B_FINAL_SCORE,result[7],"Final score for Team B should be "+TEAM_B_FINAL_SCORE);
+			logResponse("Get bet scores", result);
+			assert.equal(playerTeamAPrediction,result[0],"Player should have "+playerTeamAPrediction +" as predicted score for team A");
+			assert.equal(playerTeamBPrediction,result[1],"Player should have "+playerTeamBPrediction +" as predicted score for team B");
 		});
 	});
 }
 
-function testWinner(owner, player, tournamentId,matchId,isWinner){
-	it("Checking winner", function(){
+function testBlockTime(player){
+	it("Get Block Time", function(){
+		console.log("\n================BLOCK TIME==================");
 		var meta ;
 		return SportsPool.deployed().then(function(instance) {
 			meta = instance;
-			return meta.isWinner.call(tournamentId,matchId,{from: player});
+			return meta.getTime.call({from: player});
 		}).then(function(result){
-			logResponse("Is Winner ("+isWinner+")",result);
-			assert.equal(isWinner,result,"This account should "+(isWinner?"be":"not be")+" winner");
-				
+			logResponse("Block time is: ",result);
 		});
 	});
-}
-
-function testPayout(owner, player, tournamentId,matchId,isWinner){
-	if(!isWinner) //figure out how to test if loser tries to claim payout
-		return;
-	it("Get payout ", function(){
-			var meta ;
-			var initialBalance ;
-			 return SportsPool.deployed().then(function(instance) {
-				meta = instance;
-				return SportsPool.web3.eth.getBalance(player);
-			}).then(function(result){
-				console.log("Initial player balance:"+result);
-				initialBalance = result;
-				return meta.getMatchPrize.call(tournamentId,matchId,{from: player});
-			}).then(function(result){
-				return meta.getPayout(tournamentId,matchId,{from: player});
-			}).then(function(error,result){
-				console.log("Paid out player...");
-				//figure out loser case
-				if(error){ //truffle y u fail?
-					logGasCost("Payout error gas cost",error);
-					//logResponse("Get payout error",error);
-				}else{
-					logGasCost("Payout gas cost",result);
-					logResponse("Got payout",result);
-				}
-				return SportsPool.web3.eth.getBalance(player);
-					
-			}).then(function(result){
-				console.log("Balance after payout:"+result);
-				var balChange =  result - initialBalance;
-				if(balChange<=0){ 
-					assert.ifError(1,"PLayers balance should have increased!");
-				}//TODO: check !isWInner
-				return SportsPool.web3.eth.getBalance(owner);
-			}).then(function(result){
-				logWeiCost("Contract balance after payout",result); //lol wtf? is it initialized with 100 eth?
-				//check contract's balance?
-			}); 
-		});
 }
 
 function logResponse(tag, resp){
@@ -189,4 +145,3 @@ function dollarToWei(dollar){
 function weiToDollar(wei){
 	return SportsPool.web3.fromWei(wei, "ether")* ETH_PRICE ;
 }
-	

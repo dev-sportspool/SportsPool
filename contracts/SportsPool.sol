@@ -36,6 +36,23 @@ contract priced {
     }
 }
 
+contract timed {
+    // As per white-paper "Check that the timestamp of the block is greater than that of the referenced previous block and less than 15 minutes into the future"
+    // We use block.timestamp and a error margin (threshold) of 15min for compare with the betting end time
+    uint constant THRESHOLD = 15*60; // Epoch is in seconds
+
+    // Reference:
+    // https://github.com/ethereum/wiki/wiki/White-Paper
+    // https://ethereum.stackexchange.com/questions/5924/how-do-ethereum-mining-nodes-maintain-a-time-consistent-with-the-network/5926#5926
+    // https://ethereum.stackexchange.com/questions/5927/how-would-a-miner-cope-with-a-huge-block-time
+
+    // Modifiers can receive arguments:
+    modifier inTime(uint timestamp) {
+        require(block.timestamp + THRESHOLD < timestamp);
+        _;
+    }
+}
+
 contract fractions {
     event PercentError(
         address indexed _from,
@@ -60,7 +77,7 @@ contract fractions {
     }
 }
 
-contract SportsPool is owned, mortal, priced, fractions{
+contract SportsPool is owned, mortal, priced, timed, fractions{
 
     /**
      *  Structs
@@ -81,6 +98,7 @@ contract SportsPool is owned, mortal, priced, fractions{
         int scoreTeamA;//initialized with -1 until final score is known
         int scoreTeamB;//initialized with -1 until final score is known
         uint devFeeWei;//value must be in wei!!!
+        uint betEndTime;// Last time we allow user to place a bet
         mapping (uint => Bet) bets; //users bets
     }
     
@@ -138,11 +156,11 @@ contract SportsPool is owned, mortal, priced, fractions{
     }
     
     //Add match to a tournament
-    function addMatch(uint tournamentId, uint teamAId, uint teamBId, uint priceWei, uint devFeeWei) public onlyOwner {
-        require(tournamentId>0 && tournamentId<nextTournamentId && priceWei>devFeeWei && teamAId != teamBId);
+    function addMatch(uint tournamentId, uint teamAId, uint teamBId, uint priceWei, uint devFeeWei, uint betEndTime) public onlyOwner {
+        require(tournamentId>0 && tournamentId<nextTournamentId && priceWei>devFeeWei && teamAId != teamBId && betEndTime > block.timestamp);
         // Data Modification
         Tournament storage t = tournaments[tournamentId];
-        t.matches[t.nextMatchId] = Match({id:t.nextMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei});
+        t.matches[t.nextMatchId] = Match({id:t.nextMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei, betEndTime:betEndTime});
         t.nextMatchId++;
 
         // Event
@@ -150,8 +168,8 @@ contract SportsPool is owned, mortal, priced, fractions{
     }
     
     // Edits an existing match
-    function editMatch(uint tournamentId, uint matchId, uint teamAId, uint teamBId, bool cancelled) public onlyOwner {
-        require( teamAId != teamBId);
+    function editMatch(uint tournamentId, uint matchId, uint teamAId, uint teamBId, bool cancelled, uint betEndTime) public onlyOwner {
+        require( teamAId != teamBId && betEndTime > block.timestamp);
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
         require(m.scoreTeamA==-1&&m.scoreTeamB==-1);
@@ -183,11 +201,12 @@ contract SportsPool is owned, mortal, priced, fractions{
     **/
     
     //Variation of joinTournamentMatch() with addBet() to save on gas
-    function joinTournamentMatchWithBet( uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB) public payable costs(tournaments[tournamentId].matches[matchId].priceWei){
+    function joinTournamentMatchWithBet( uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB)
+        public payable costs(tournaments[tournamentId].matches[matchId].priceWei)
+                       inTime(tournaments[tournamentId].matches[matchId].betEndTime)
+    {
         require(scoreTeamA>=0 && scoreTeamB>=0);
-        
-        //todo stop if time is too close to match
-        //consider block.timestamp
+
         var (t,m) = getTournamentMatch(tournamentId,matchId);
         uint userId = t.userIds[msg.sender];
         if (userId == 0) {
@@ -203,10 +222,10 @@ contract SportsPool is owned, mortal, priced, fractions{
     }
 
     // Edit an existing Bet for a given Match
-    function editBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB) public {
+    function editBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB)
+        public inTime(tournaments[tournamentId].matches[matchId].betEndTime)
+    {
         require(scoreTeamA>=0 && scoreTeamB>=0);
-        //todo stop if time is too close to match or passed
-        //consider block.timestamp
         //todo consider batching externally or consider limiting number of allowed changes
         // Data Modification
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
@@ -240,13 +259,6 @@ contract SportsPool is owned, mortal, priced, fractions{
 		}
     }
 
-    // Give a specific user the payout deserved
-    // Todo - Backend will check isWinner, getMatchPrize, getNumberOfWinners based on the address, tournamedid and matchid from getPayout event
-    // Todo we can even move the division outside of the blockchain and make it even more gas efficient
-    function giveUserPayout(address user, uint prize, uint numWinners) public onlyOwner{
-        require(sendTo(user, prize / numWinners));
-    }
-
     /**
     *  Player Functions
     *  Data read (no gas fees)
@@ -266,7 +278,7 @@ contract SportsPool is owned, mortal, priced, fractions{
     }
 
     //returns array of winners userIds
-    function getWinners(uint tournamentId, uint matchId) public view returns(uint[] ){ //todo investigate more efficient ways
+    function getWinners(uint tournamentId, uint matchId) public view returns(uint[]) { //todo investigate more efficient ways
         var (t,m) = getTournamentMatch(tournamentId, matchId);
         require(m.scoreTeamA>=0&&m.scoreTeamB>=0);
         uint numWinners = getNumberOfWinners(tournamentId, matchId);
@@ -280,12 +292,24 @@ contract SportsPool is owned, mortal, priced, fractions{
         return winners;
     }
 
-
     //Returns Tournament by id
     function getTournament(uint tournamentId) public view returns(uint id,uint nextMatchId, uint nextUserId){
         Tournament storage t = tournaments[tournamentId];
         require(t.id>0 && t.id<nextTournamentId);
         return (t.id,t.nextMatchId-1,t.nextUserId-1);
+    }
+
+    // Gets a list of matches for a given tournament
+    function getTournamentMatches(uint tournamentId) public view returns (uint[]) {
+        Tournament storage t = tournaments[tournamentId];
+        require(t.id>0 && t.id<nextTournamentId);
+        uint[] memory matches = new uint[](t.nextMatchId-1);
+        for (uint matchId = INITIAL_ID; matchId < t.nextMatchId; matchId++) {
+            if (!t.matches[matchId].cancelled) {
+                matches[matchId] = t.matches[matchId].id;
+            }
+        }
+        return matches;
     }
     
     //Returns total Tournament prize amount
@@ -314,13 +338,19 @@ contract SportsPool is owned, mortal, priced, fractions{
     }
 
     // Gets a specific match for a specific tournament
-    function getMatch(uint tournamentId, uint matchId) public view returns(uint, uint, uint, uint, uint, bool, int, int, uint){
+    function getMatch(uint tournamentId, uint matchId) public view returns(uint, uint, uint, uint, uint, bool, int, int, uint, uint){
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
         require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId );
-        return (m.id, m.priceWei, m.players, m.idTeamA, m.idTeamB, m.cancelled, m.scoreTeamA, m.scoreTeamB, m.devFeeWei);
+        return (m.id, m.priceWei, m.players, m.idTeamA, m.idTeamB, m.cancelled, m.scoreTeamA, m.scoreTeamB, m.devFeeWei, m.betEndTime);
     }
-    
+
+    // Gets time of the last block mined
+    // todo consider removing after testing
+    function getTime() public view returns (uint) {
+        return block.timestamp;
+    }
+
     /**
      *  Private Functions
      **/
