@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const volleyball = require('volleyball');
+const dbTest = require('./DbTest');
 
 app.use(volleyball);
 
@@ -18,7 +19,15 @@ app.use(function (err, req, res, next) {
 
 app.get('/swag', function (request, response) {
 	response.setHeader('Content-Type', 'application/json')
-	response.write('{swag:"max!"}')
+	response.write('{"swag":"max!"}')
+	response.end()
+});
+
+app.get('/test', function (request, response) {
+	response.setHeader('Content-Type', 'application/json')
+	var t = new dbTest.DbTest()
+	t.test()
+	response.write('Ouf!')
 	response.end()
 });
 
@@ -31,7 +40,3 @@ app.get('/', function (request, response) {
 app.listen(process.env.PORT || 3000, function () {
   console.log("Blasting on port 3000 fam");
 });
-
-//For Reference:
-//https://expressjs.com/en/guide/routing.html
-//https://cosmicjs.com/blog/how-to-build-a-todo-app-using-react-redux-and-webpack
