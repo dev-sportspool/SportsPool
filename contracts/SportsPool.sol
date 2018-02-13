@@ -83,6 +83,7 @@ contract SportsPool is owned, mortal, priced, timed {
     struct Tournament{
         uint id;
         uint nextMatchId;
+        bool finished;
         mapping (uint => Match) matches;
         uint nextUserId;
         mapping (address => uint) userIds; //address to userId mapping
@@ -130,13 +131,13 @@ contract SportsPool is owned, mortal, priced, timed {
     
     //Creates new Tournament with entry price
     function addTournament() public onlyOwner{
-        tournaments[nextTournamentId] = Tournament({id:nextTournamentId, nextMatchId:INITIAL_ID, nextUserId:INITIAL_ID});
+        tournaments[nextTournamentId] = Tournament({id:nextTournamentId, nextMatchId:INITIAL_ID, nextUserId:INITIAL_ID, finished:false});
         nextTournamentId++;
     }
     
     //Add match to a tournament
     function addMatch(uint tournamentId, uint teamAId, uint teamBId, uint priceWei, uint devFeeWei, uint betEndTime) public onlyOwner {
-        require(tournamentId>0 && tournamentId<nextTournamentId && priceWei>devFeeWei && teamAId != teamBId && betEndTime > block.timestamp);
+        require(tournamentId>0 && tournamentId<nextTournamentId && !tournaments[tournamentId].finished && priceWei>devFeeWei && teamAId != teamBId && betEndTime > block.timestamp);
         // Data Modification
         Tournament storage t = tournaments[tournamentId];
         t.matches[t.nextMatchId] = Match({id:t.nextMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei, betEndTime:betEndTime});
@@ -148,7 +149,7 @@ contract SportsPool is owned, mortal, priced, timed {
     
     // Edits an existing match
     function editMatch(uint tournamentId, uint matchId, uint teamAId, uint teamBId, bool cancelled, uint betEndTime) public onlyOwner {
-        require( teamAId != teamBId && betEndTime > block.timestamp);
+        require(!tournaments[tournamentId].finished && teamAId != teamBId && betEndTime > block.timestamp);
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
         require(m.scoreTeamA==-1&&m.scoreTeamB==-1);
@@ -163,6 +164,7 @@ contract SportsPool is owned, mortal, priced, timed {
     
     //Set final match scores
     function setMatchScores(uint tournamentId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
+        require(!tournaments[tournamentId].finished);
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
         require(scoreTeamA>-1&&scoreTeamB>-1); //validate new scores
@@ -172,6 +174,13 @@ contract SportsPool is owned, mortal, priced, timed {
 
         // Event
         MatchEnded(msg.sender, tournamentId, matchId);
+    }
+
+    // Finishes the tournament and cashes out the remaining balance of the contract
+    // after the players have received their winnings
+    function finishTournament(uint tournamentId) public onlyOwner {
+        require(tournamentId>0 && tournamentId<nextTournamentId && !tournaments[tournamentId].finished && this.balance > 0);
+        owner.send(this.balance); //switch to transfer
     }
     
     /**
