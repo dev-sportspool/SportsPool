@@ -7,6 +7,7 @@ MongoClient.connect("mongodb://"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/", functio
 	  console.log("Connected to db :"+db);
 	  database.dropDatabase().then(function(result){
 		  database.removeUser(CONST.DB_ADMIN_USERNAME, function(result, error){
+			  database.removeUser(CONST.DB_GUEST_USERNAME, function(result, error){
 			  database.createCollection(CONST.TOURNAMENT).then(function(result) {
 		  console.log("Created "+CONST.TOURNAMENT+" collection:"+result);
 		  database.createCollection(CONST.MATCH)
@@ -33,6 +34,7 @@ MongoClient.connect("mongodb://"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/", functio
 				  
 				})
 			})
+		});
 		});
 		  });
 	  });
