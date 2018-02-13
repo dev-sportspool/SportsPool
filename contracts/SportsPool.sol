@@ -53,31 +53,8 @@ contract timed {
     }
 }
 
-contract fractions {
-    event PercentError(
-        address indexed _from,
-        uint _value
-    );
-    modifier percent(uint value){
-        if(value <= 100){
-            _;
-        }else{
-            PercentError(msg.sender, msg.value);
-        }
-    }
-    uint precision;
-    function fractions(uint decimalPlaces) public {
-        precision = decimalPlaces;
-    }
-    function asFloat(uint num) public view returns(uint){
-        return num*10**(precision+1);
-    }
-    function getPrecision() public view returns(uint){
-        return precision;
-    }
-}
 
-contract SportsPool is owned, mortal, priced, timed, fractions{
+contract SportsPool is owned, mortal, priced, timed {
 
     /**
      *  Structs
@@ -86,6 +63,7 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
     struct Bet{
         int scoreTeamA;
         int scoreTeamB;
+        bool paid;
     }
     
     struct Match{
@@ -105,6 +83,7 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
     struct Tournament{
         uint id;
         uint nextMatchId;
+        bool finished;
         mapping (uint => Match) matches;
         uint nextUserId;
         mapping (address => uint) userIds; //address to userId mapping
@@ -135,6 +114,7 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
     event BetEdited(address indexed _from, uint tournamentId, uint matchId);
     event RequestedPayout(address indexed _from, uint tournamentId, uint matchId, uint prize);
 	event InsufficientBalance(address indexed _from, uint tournamentId, uint matchId, uint balance);
+    event PayoutAlreadyPaid(address indexed _from, uint tournamentId, uint matchId);
 
 
     /**
@@ -145,19 +125,19 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
          *  Owner Functions
          **/
 
-    function SportsPool()fractions(8) public {
+    function SportsPool() public {
         //todo: setup
     }
     
     //Creates new Tournament with entry price
     function addTournament() public onlyOwner{
-        tournaments[nextTournamentId] = Tournament({id:nextTournamentId, nextMatchId:INITIAL_ID, nextUserId:INITIAL_ID});
+        tournaments[nextTournamentId] = Tournament({id:nextTournamentId, nextMatchId:INITIAL_ID, nextUserId:INITIAL_ID, finished:false});
         nextTournamentId++;
     }
     
     //Add match to a tournament
     function addMatch(uint tournamentId, uint teamAId, uint teamBId, uint priceWei, uint devFeeWei, uint betEndTime) public onlyOwner {
-        require(tournamentId>0 && tournamentId<nextTournamentId && priceWei>devFeeWei && teamAId != teamBId && betEndTime > block.timestamp);
+        require(tournamentId>0 && tournamentId<nextTournamentId && !tournaments[tournamentId].finished && priceWei>devFeeWei && teamAId != teamBId && betEndTime > block.timestamp);
         // Data Modification
         Tournament storage t = tournaments[tournamentId];
         t.matches[t.nextMatchId] = Match({id:t.nextMatchId, priceWei:priceWei, players:0, cancelled:false, idTeamA:teamAId, idTeamB:teamBId, scoreTeamA:-1, scoreTeamB:-1, devFeeWei:devFeeWei, betEndTime:betEndTime});
@@ -169,7 +149,7 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
     
     // Edits an existing match
     function editMatch(uint tournamentId, uint matchId, uint teamAId, uint teamBId, bool cancelled, uint betEndTime) public onlyOwner {
-        require( teamAId != teamBId && betEndTime > block.timestamp);
+        require(!tournaments[tournamentId].finished && teamAId != teamBId && betEndTime > block.timestamp);
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
         require(m.scoreTeamA==-1&&m.scoreTeamB==-1);
@@ -184,6 +164,7 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
     
     //Set final match scores
     function setMatchScores(uint tournamentId , uint matchId, int scoreTeamA, int scoreTeamB) public onlyOwner{
+        require(!tournaments[tournamentId].finished);
         // Data Modification
         var (,m) = getTournamentMatch(tournamentId, matchId);
         require(scoreTeamA>-1&&scoreTeamB>-1); //validate new scores
@@ -193,6 +174,13 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
 
         // Event
         MatchEnded(msg.sender, tournamentId, matchId);
+    }
+
+    // Finishes the tournament and cashes out the remaining balance of the contract
+    // after the players have received their winnings
+    function finishTournament(uint tournamentId) public onlyOwner {
+        require(tournamentId>0 && tournamentId<nextTournamentId && !tournaments[tournamentId].finished && this.balance > 0);
+        owner.send(this.balance); //switch to transfer
     }
     
     /**
@@ -215,7 +203,7 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
             ++t.nextUserId;
         }
         m.players++;
-        m.bets[userId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB});
+        m.bets[userId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB,paid:false});
 
         // Event
         TournamentJoinedWithBet(msg.sender, msg.value, tournamentId, matchId);
@@ -239,24 +227,31 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
 
     //user request for payout
     function getPayout(uint tournamentId, uint matchId) public payable{
-        // todo - figure out how to tell the back end to check
-        // todo - look into breaking apart the processing on the back end
-        
-		//todo - validate that user can't call this multiple times
-		bool winner = isWinner(tournamentId, matchId);
-		require(winner);
-		if(winner){
-			uint prize = getMatchPrize(tournamentId, matchId);
-			uint numWinners = getNumberOfWinners(tournamentId,matchId);
-			uint payout = prize / numWinners;
-			if(this.balance<payout){
-				msg.sender.send(this.balance);	 //switch to transfer		
-				InsufficientBalance(msg.sender, tournamentId, matchId, this.balance);
-			}else{
-				msg.sender.send(payout);  //switch to transfer	
-				RequestedPayout(msg.sender, tournamentId, matchId, payout);
-			}
-		}
+		var (winner,paid) = isWinnerAndPaid(tournamentId, matchId);
+		require(winner); // If not winner, we don't continue
+
+        // Check if user got paid already
+        if (paid) {
+            PayoutAlreadyPaid(msg.sender, tournamentId, matchId);
+        } else {
+            // Prize data
+            uint prize = getMatchPrize(tournamentId, matchId);
+            uint numWinners = getNumberOfWinners(tournamentId,matchId);
+            uint payout = prize / numWinners;
+
+            // Set bet as paid
+            var (,,b) = getTournamentMatchBet(tournamentId, matchId);
+            b.paid = true;
+
+            // Make the payment
+            if (this.balance<payout){
+                msg.sender.send(this.balance);	 //switch to transfer
+                InsufficientBalance(msg.sender, tournamentId, matchId, this.balance);
+            } else {
+                msg.sender.send(payout);  //switch to transfer
+                RequestedPayout(msg.sender, tournamentId, matchId, payout);
+            }
+        }
     }
 
     /**
@@ -327,14 +322,11 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
         var (,,b) = getTournamentMatchBet(tournamentId,matchId);
         return (b.scoreTeamA, b.scoreTeamB);
     }
-    
-    // Gets winner status depending on users bets
-    function isWinner(uint tournamentId, uint matchId) public view returns(bool){
+
+    // Gets winner status depending on users bets and if the payout was given
+    function isWinnerAndPaid(uint tournamentId, uint matchId) public view returns(bool, bool){
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
-        if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
-            return true;
-        }
-        return false;
+        return (b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB, b.paid);
     }
 
     // Gets user's bet for a specific match of a specific tournament
@@ -412,13 +404,4 @@ contract SportsPool is owned, mortal, priced, timed, fractions{
         }
         return false;
     }
-    
-    function sendTo(address receiver, uint amount) private returns(bool){
-        if (amount == 0  ){ // TODO: for production add: || receiver == address(this)
-            return false;
-        }else{
-            return receiver.send(amount);
-        }
-    }
-
 }
