@@ -6,7 +6,7 @@ contract('SportsPool', function(accounts){
 	var owner = accounts[0]; //is owner of contract by default in truffle
 	const COST = dollarToWei(20.00);
 	const DEV_FEE = dollarToWei(4.00);
-	const BET_END_TIME = 25175475600; // Really future timestamp to allow bets (bet cutoff tested in BetCutoff.js)
+	const BET_END_TIME = 25175475600; // Future timestamp to allow bets (bet cutoff tested in BetCutoff.js)
 	const TEAM_A_ID = 111;
 	const TEAM_B_ID = 200;
 	const tournamentId = 1;
@@ -32,7 +32,10 @@ contract('SportsPool', function(accounts){
 		testJoinBet(owner,player,tournamentId,matchId,playerTeamAPrediction,playerTeamBPrediction,COST);
 		testMatchSetScores(owner, player,tournamentId,matchId,TEAM_A_FINAL_SCORE,TEAM_B_FINAL_SCORE);
 		testWinner(owner, player, tournamentId,matchId,isWinner);
-		testPayout(owner, player, tournamentId,matchId,isWinner);
+		testPaid(owner, player, tournamentId,matchId,isWinner,false); // Check if it ever got paid 
+		testPayout(owner, player, tournamentId,matchId,isWinner); // Pay the user
+		testPaid(owner, player, tournamentId,matchId,isWinner,isWinner); // Check if it got paid after the payout process
+		testPayout(owner, player, tournamentId,matchId,isWinner); // Try to pay again same user
 	}
 });
 
@@ -109,11 +112,23 @@ function testWinner(owner, player, tournamentId,matchId,isWinner){
 		var meta ;
 		return SportsPool.deployed().then(function(instance) {
 			meta = instance;
-			return meta.isWinner.call(tournamentId,matchId,{from: player});
+			return meta.isWinnerAndPaid.call(tournamentId,matchId,{from: player});
 		}).then(function(result){
-			logResponse("Is Winner ("+isWinner+")",result);
-			assert.equal(isWinner,result,"This account should "+(isWinner?"be":"not be")+" winner");
-				
+			logResponse("Is Winner: ",result[0]);
+			assert.equal(isWinner,result[0],"This account should "+(result[0]?"be":"not be")+" winner");				
+		});
+	});
+}
+
+function testPaid(owner, player, tournamentId,matchId,isWinner,gotPaid){
+	it("Checking paid payout", function(){
+		var meta ;
+		return SportsPool.deployed().then(function(instance) {
+			meta = instance;
+			return meta.isWinnerAndPaid.call(tournamentId,matchId,{from: player});
+		}).then(function(result){
+			logResponse("Received Payout: ",result[1]);
+			assert.equal(gotPaid,result[1],"This account should have "+(gotPaid?"received":"not received")+" the money");				
 		});
 	});
 }
