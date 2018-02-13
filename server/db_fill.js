@@ -11,6 +11,7 @@ MongoClient.connect("mongodb://"+CONST.DB_ADMIN_USERNAME+":"+CONST.DB_ADMIN_PASS
 	  icon:"",
 	  banner:""}).then(function(result){
 		  console.log("created tournament");
+		  db.close();
 	  }).catch(function(ex){
 		  console.log("failed creating tournament"+ex);
 		  db.close();
