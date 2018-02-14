@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const volleyball = require('volleyball');
-const dbTest = require('./DbTest');
+const reader = require('./db_reader');
 
 app.use(volleyball);
 
@@ -16,19 +16,21 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500).send(err.message || 'Internal server error.');
 });
 
-
-app.get('/swag', function (request, response) {
-	response.setHeader('Content-Type', 'application/json')
-	response.write('{"swag":"max!"}')
-	response.end()
-});
-
-app.get('/test', function (request, response) {
-	response.setHeader('Content-Type', 'application/json')
-	var t = new dbTest.DbTest()
-	t.test()
-	response.write('Ouf!')
-	response.end()
+app.get('/tournament', function (request, response) {
+	var id = parseInt(request.query.id);
+	console.log("id="+id);
+	response.setHeader('Content-Type', 'application/json');
+	reader.getTournament(id,function(result){
+		console.log("tournaments success:"+result);
+		response.write(JSON.stringify(result));
+		response.end();
+	},
+	function(error){
+		response.write('{"error":"Oops!"}');
+		console.log("tournaments error:"+error);
+		response.end();
+	});
+	
 });
 
 //redirect home if paths are unknown
