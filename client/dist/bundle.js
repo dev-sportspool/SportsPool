@@ -32702,10 +32702,15 @@ module.exports = {
 			"events": {},
 			"links": {},
 			"address": "0x6b4ca27781f28d77fa163a306ab5cb49c76d1212"
+		},
+		"1518664622688": {
+			"events": {},
+			"links": {},
+			"address": "0xf88c3d92830df08c0fe1ecf0ff781cf3d9cf6635"
 		}
 	},
 	"schemaVersion": "1.0.1",
-	"updatedAt": "2018-02-14T03:46:37.833Z"
+	"updatedAt": "2018-02-15T03:17:35.851Z"
 };
 
 /***/ }),
@@ -55850,10 +55855,15 @@ module.exports = {
 			"events": {},
 			"links": {},
 			"address": "0x1b232b9f9d9c4991bf6aac9b9060ff684723982c"
+		},
+		"1518664622688": {
+			"events": {},
+			"links": {},
+			"address": "0xbfa9c337cb7f4f149d089de4d37be73941883890"
 		}
 	},
 	"schemaVersion": "1.0.1",
-	"updatedAt": "2018-02-14T03:46:37.841Z"
+	"updatedAt": "2018-02-15T03:17:35.862Z"
 };
 
 /***/ }),
