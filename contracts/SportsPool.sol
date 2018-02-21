@@ -64,6 +64,7 @@ contract SportsPool is owned, mortal, priced, timed {
         int scoreTeamA;
         int scoreTeamB;
         bool paid;
+        bool initialized;
     }
     
     struct Match{
@@ -203,7 +204,7 @@ contract SportsPool is owned, mortal, priced, timed {
             ++t.nextUserId;
         }
         m.players++;
-        m.bets[userId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB,paid:false});
+        m.bets[userId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB,paid:false,initialized:true});
 
         // Event
         TournamentJoinedWithBet(msg.sender, msg.value, tournamentId, matchId);
@@ -320,13 +321,14 @@ contract SportsPool is owned, mortal, priced, timed {
     // Checks the Bet status of a match for a specific user
     function getBetScores(uint tournamentId, uint matchId) public view returns (int scoreTeamA, int scoreTeamB){
         var (,,b) = getTournamentMatchBet(tournamentId,matchId);
+        require(b.initialized);
         return (b.scoreTeamA, b.scoreTeamB);
     }
 
     // Gets winner status depending on users bets and if the payout was given
     function isWinnerAndPaid(uint tournamentId, uint matchId) public view returns(bool, bool){
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
-        return (b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB, b.paid);
+        return (b.initialized && b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB, b.paid);
     }
 
     // Gets user's bet for a specific match of a specific tournament
@@ -334,7 +336,7 @@ contract SportsPool is owned, mortal, priced, timed {
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
         uint userId = t.userIds[msg.sender];
-        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId && userId>0 && userId<t.nextUserId );
+        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId && m.bets[userId].initialized && userId>0 && userId<t.nextUserId );
         return (m.bets[userId].scoreTeamA, m.bets[userId].scoreTeamB);
     }
 
@@ -367,7 +369,7 @@ contract SportsPool is owned, mortal, priced, timed {
      //get tournament and match touple
      function getTournamentMatchBet(uint tournamentId, uint matchId, uint userId)private view returns(Tournament storage, Match storage, Bet storage){
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        require( userId>0 && userId<t.nextUserId);
+        require(userId>0 && userId<t.nextUserId);
         return (t,m,m.bets[userId]);
      }
      
@@ -375,33 +377,13 @@ contract SportsPool is owned, mortal, priced, timed {
      function getTournamentMatchBet(uint tournamentId, uint matchId)private view returns(Tournament storage, Match storage, Bet storage){
         var (t,m) = getTournamentMatch(tournamentId,matchId);
         uint userId = t.userIds[msg.sender];
-        require( userId>0 && userId<t.nextUserId);
+        require(userId>0 && userId<t.nextUserId);
         return (t,m,m.bets[userId]);
      }
-
-    //get tournament and match touple
-    function getTournamentMatchBet(uint tournamentId, uint matchId, address userAddress)private view returns(Tournament storage, Match storage, Bet storage){
-        var (t,m) = getTournamentMatch(tournamentId,matchId);
-        uint userId = t.userIds[userAddress];
-        require( userId>0 && userId<t.nextUserId);
-        return (t,m,m.bets[userId]);
-    }
 
     // Gets winner status depending on users bets
     function isWinner(uint tournamentId, uint matchId, uint userId) private view returns(bool){
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId,userId);
-        if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
-            return true;
-        }
-        return false;
-    }
-
-    // Gets winner status depending on users bets
-    function isWinner(uint tournamentId, uint matchId, address userAddress) private view returns(bool){
-        var (,m,b) = getTournamentMatchBet(tournamentId,matchId,userAddress);
-        if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
-            return true;
-        }
-        return false;
+        return (b.initialized && b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB);
     }
 }

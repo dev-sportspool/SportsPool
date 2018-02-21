@@ -16,6 +16,10 @@ contract('SportsPool', function(accounts){
 	testTournament(owner,tournamentId);
 	//TODO: make for loop for testing multiple matches
 	testMatch(owner,player,tournamentId, matchId,TEAM_A_ID,TEAM_B_ID,COST,DEV_FEE,BET_END_TIME);
+
+	// Match 2
+	testMatch(owner,player,tournamentId, 2,TEAM_A_ID,TEAM_B_ID,COST,DEV_FEE,BET_END_TIME);
+	testMatchSetScores(owner, player,tournamentId,2,0,0);
 	
 	console.log("================FOR EACH PLAYER================");
 	for(var i=1; i<9; i++){ //starting from 1 as 0 is owner of contract, 8 players total
@@ -36,6 +40,7 @@ contract('SportsPool', function(accounts){
 		testPayout(owner, player, tournamentId,matchId,isWinner); // Pay the user
 		testPaid(owner, player, tournamentId,matchId,isWinner,isWinner); // Check if it got paid after the payout process
 		testPayout(owner, player, tournamentId,matchId,isWinner); // Try to pay again same user
+		testWinner(owner, player, tournamentId, 2, false); // Should pass as not winner, as this user never bet on that match
 	}
 });
 
