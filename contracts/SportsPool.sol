@@ -194,7 +194,7 @@ contract SportsPool is owned, mortal, priced, timed {
         public payable costs(tournaments[tournamentId].matches[matchId].priceWei)
                        inTime(tournaments[tournamentId].matches[matchId].betEndTime)
     {
-        require(scoreTeamA>=0 && scoreTeamB>=0);
+        require(scoreTeamA>=0 && scoreTeamB>=0 && !tournaments[tournamentId].matches[matchId].cancelled);
 
         var (t,m) = getTournamentMatch(tournamentId,matchId);
         uint userId = t.userIds[msg.sender];
@@ -214,7 +214,7 @@ contract SportsPool is owned, mortal, priced, timed {
     function editBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB)
         public inTime(tournaments[tournamentId].matches[matchId].betEndTime)
     {
-        require(scoreTeamA>=0 && scoreTeamB>=0);
+        require(scoreTeamA>=0 && scoreTeamB>=0 && !tournaments[tournamentId].matches[matchId].cancelled);
 
         // Data Modification
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
@@ -228,6 +228,9 @@ contract SportsPool is owned, mortal, priced, timed {
 
     //user request for payout
     function getPayout(uint tournamentId, uint matchId) public payable{
+        // If match is cancelled there is no payout to give
+        require(!tournaments[tournamentId].matches[matchId].cancelled);
+
 		var (winner,paid) = isWinnerAndPaid(tournamentId, matchId);
 		require(winner); // If not winner, we don't continue
 
