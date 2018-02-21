@@ -295,7 +295,7 @@ contract SportsPool is owned, mortal, priced, timed {
     function getTournament(uint tournamentId) public view returns(uint id,uint nextMatchId, uint nextUserId){
         Tournament storage t = tournaments[tournamentId];
         require(t.id>0 && t.id<nextTournamentId);
-        return (t.id,t.nextMatchId-1,t.nextUserId-1);
+        return (t.id,t.nextMatchId,t.nextUserId);
     }
 
     // Gets a list of matches for a given tournament
@@ -303,9 +303,10 @@ contract SportsPool is owned, mortal, priced, timed {
         Tournament storage t = tournaments[tournamentId];
         require(t.id>0 && t.id<nextTournamentId);
         uint[] memory matches = new uint[](t.nextMatchId-1);
+        uint index = 0;
         for (uint matchId = INITIAL_ID; matchId < t.nextMatchId; matchId++) {
             if (!t.matches[matchId].cancelled) {
-                matches[matchId] = t.matches[matchId].id;
+                matches[index++] = t.matches[matchId].id;
             }
         }
         return matches;
@@ -349,6 +350,28 @@ contract SportsPool is owned, mortal, priced, timed {
         Match storage m = t.matches[matchId];
         require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId );
         return (m.id, m.priceWei, m.players, m.idTeamA, m.idTeamB, m.cancelled, m.scoreTeamA, m.scoreTeamB, m.devFeeWei, m.betEndTime);
+    }
+
+    // Returns all the match bets (just scores). Due to limitations in return types, it will return
+    // two arrays of scores per teams. [0][0] will be first bet, [1][1] second, and so on
+    function getMatchAllBets(uint tournamentId, uint matchId) public view returns(int[], int[]) {
+        Tournament storage t = tournaments[tournamentId];
+        Match storage m = t.matches[matchId];
+        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId && !m.cancelled);
+
+        int[] memory teamAScores = new int[](m.players);
+        int[] memory teamBScores = new int[](m.players);
+        uint index = 0;
+
+        for (uint userId= INITIAL_ID; userId < t.nextUserId; userId++) {
+            if (m.bets[userId].initialized){
+                teamAScores[index] = m.bets[userId].scoreTeamA;
+                teamBScores[index] = m.bets[userId].scoreTeamB;
+                index++;
+            }
+        }
+
+        return (teamAScores, teamBScores);
     }
 
     // Gets time of the last block mined

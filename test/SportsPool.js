@@ -42,6 +42,9 @@ contract('SportsPool', function(accounts){
 		testPayout(owner, player, tournamentId,matchId,isWinner); // Try to pay again same user
 		testWinner(owner, player, tournamentId, 2, false); // Should pass as not winner, as this user never bet on that match
 	}
+
+	// Print Match bets
+	printMatchBets(owner, player, tournamentId, matchId);
 });
 
 function testTournament(owner,tournamentId){
@@ -177,6 +180,19 @@ function testPayout(owner, player, tournamentId,matchId,isWinner){
 				//check contract's balance?
 			}); 
 		});
+}
+
+function printMatchBets(owner, player, tournamentId,matchId){
+	var meta ;
+	it("Match bets", function(){
+		return SportsPool.deployed().then(function(instance) {
+			meta = instance;
+			return meta.getMatchAllBets.call(tournamentId,matchId,{from: player});
+		}).then(function(result){
+			logResponse("Scores Team A: ",result[0]);
+			logResponse("Scores Team B: ",result[1]);				
+		});
+	});
 }
 
 function logResponse(tag, resp){
