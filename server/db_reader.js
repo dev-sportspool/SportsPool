@@ -3,12 +3,31 @@ var ObjectId = require('mongodb').ObjectID;
 const CONST = require('./db_constants');
 
 var DBReader = class DBReader{
+	
 	getTournament(id, success, failure){
 		MongoClient.connect("mongodb://"+CONST.DB_GUEST_USERNAME+":"+CONST.DB_GUEST_PASSWORD+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
 		  if (err) failure(err);
 		  var database = db.db(CONST.DB_ADDRESS);
 		  var query = { _id:id };
 			database.collection(CONST.TOURNAMENT).findOne(query)
+			.then(function(result){
+				success(result);
+				db.close();
+			})
+			.catch(function(err){
+				failure(err);
+				db.close();
+			});
+		});
+	}
+	
+	getTournaments( success, failure){
+		MongoClient.connect("mongodb://"+CONST.DB_GUEST_USERNAME+":"+CONST.DB_GUEST_PASSWORD+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
+		  if (err) failure(err);
+		  var database = db.db(CONST.DB_ADDRESS);
+			database.collection(CONST.TOURNAMENT)
+			.find({})
+			.toArray()
 			.then(function(result){
 				success(result);
 				db.close();
