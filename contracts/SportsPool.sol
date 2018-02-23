@@ -64,6 +64,7 @@ contract SportsPool is owned, mortal, priced, timed {
         int scoreTeamA;
         int scoreTeamB;
         bool paid;
+        bool initialized;
     }
     
     struct Match{
@@ -193,7 +194,7 @@ contract SportsPool is owned, mortal, priced, timed {
         public payable costs(tournaments[tournamentId].matches[matchId].priceWei)
                        inTime(tournaments[tournamentId].matches[matchId].betEndTime)
     {
-        require(scoreTeamA>=0 && scoreTeamB>=0);
+        require(scoreTeamA>=0 && scoreTeamB>=0 && !tournaments[tournamentId].matches[matchId].cancelled);
 
         var (t,m) = getTournamentMatch(tournamentId,matchId);
         uint userId = t.userIds[msg.sender];
@@ -203,7 +204,7 @@ contract SportsPool is owned, mortal, priced, timed {
             ++t.nextUserId;
         }
         m.players++;
-        m.bets[userId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB,paid:false});
+        m.bets[userId] = Bet({scoreTeamA:scoreTeamA,scoreTeamB:scoreTeamB,paid:false,initialized:true});
 
         // Event
         TournamentJoinedWithBet(msg.sender, msg.value, tournamentId, matchId);
@@ -213,7 +214,7 @@ contract SportsPool is owned, mortal, priced, timed {
     function editBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB)
         public inTime(tournaments[tournamentId].matches[matchId].betEndTime)
     {
-        require(scoreTeamA>=0 && scoreTeamB>=0);
+        require(scoreTeamA>=0 && scoreTeamB>=0 && !tournaments[tournamentId].matches[matchId].cancelled);
 
         // Data Modification
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
@@ -227,6 +228,9 @@ contract SportsPool is owned, mortal, priced, timed {
 
     //user request for payout
     function getPayout(uint tournamentId, uint matchId) public payable{
+        // If match is cancelled there is no payout to give
+        require(!tournaments[tournamentId].matches[matchId].cancelled);
+
 		var (winner,paid) = isWinnerAndPaid(tournamentId, matchId);
 		require(winner); // If not winner, we don't continue
 
@@ -291,7 +295,7 @@ contract SportsPool is owned, mortal, priced, timed {
     function getTournament(uint tournamentId) public view returns(uint id,uint nextMatchId, uint nextUserId){
         Tournament storage t = tournaments[tournamentId];
         require(t.id>0 && t.id<nextTournamentId);
-        return (t.id,t.nextMatchId-1,t.nextUserId-1);
+        return (t.id,t.nextMatchId,t.nextUserId);
     }
 
     // Gets a list of matches for a given tournament
@@ -299,9 +303,10 @@ contract SportsPool is owned, mortal, priced, timed {
         Tournament storage t = tournaments[tournamentId];
         require(t.id>0 && t.id<nextTournamentId);
         uint[] memory matches = new uint[](t.nextMatchId-1);
+        uint index = 0;
         for (uint matchId = INITIAL_ID; matchId < t.nextMatchId; matchId++) {
             if (!t.matches[matchId].cancelled) {
-                matches[matchId] = t.matches[matchId].id;
+                matches[index++] = t.matches[matchId].id;
             }
         }
         return matches;
@@ -320,13 +325,14 @@ contract SportsPool is owned, mortal, priced, timed {
     // Checks the Bet status of a match for a specific user
     function getBetScores(uint tournamentId, uint matchId) public view returns (int scoreTeamA, int scoreTeamB){
         var (,,b) = getTournamentMatchBet(tournamentId,matchId);
+        require(b.initialized);
         return (b.scoreTeamA, b.scoreTeamB);
     }
 
     // Gets winner status depending on users bets and if the payout was given
     function isWinnerAndPaid(uint tournamentId, uint matchId) public view returns(bool, bool){
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId);
-        return (b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB, b.paid);
+        return (b.initialized && b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB, b.paid);
     }
 
     // Gets user's bet for a specific match of a specific tournament
@@ -334,7 +340,7 @@ contract SportsPool is owned, mortal, priced, timed {
         Tournament storage t = tournaments[tournamentId];
         Match storage m = t.matches[matchId];
         uint userId = t.userIds[msg.sender];
-        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId && userId>0 && userId<t.nextUserId );
+        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId && m.bets[userId].initialized && userId>0 && userId<t.nextUserId );
         return (m.bets[userId].scoreTeamA, m.bets[userId].scoreTeamB);
     }
 
@@ -344,6 +350,28 @@ contract SportsPool is owned, mortal, priced, timed {
         Match storage m = t.matches[matchId];
         require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId );
         return (m.id, m.priceWei, m.players, m.idTeamA, m.idTeamB, m.cancelled, m.scoreTeamA, m.scoreTeamB, m.devFeeWei, m.betEndTime);
+    }
+
+    // Returns all the match bets (just scores). Due to limitations in return types, it will return
+    // two arrays of scores per teams. [0][0] will be first bet, [1][1] second, and so on
+    function getMatchAllBets(uint tournamentId, uint matchId) public view returns(int[], int[]) {
+        Tournament storage t = tournaments[tournamentId];
+        Match storage m = t.matches[matchId];
+        require(t.id>0 && t.id<nextTournamentId && m.id>0 && m.id<t.nextMatchId && !m.cancelled);
+
+        int[] memory teamAScores = new int[](m.players);
+        int[] memory teamBScores = new int[](m.players);
+        uint index = 0;
+
+        for (uint userId= INITIAL_ID; userId < t.nextUserId; userId++) {
+            if (m.bets[userId].initialized){
+                teamAScores[index] = m.bets[userId].scoreTeamA;
+                teamBScores[index] = m.bets[userId].scoreTeamB;
+                index++;
+            }
+        }
+
+        return (teamAScores, teamBScores);
     }
 
     // Gets time of the last block mined
@@ -367,7 +395,7 @@ contract SportsPool is owned, mortal, priced, timed {
      //get tournament and match touple
      function getTournamentMatchBet(uint tournamentId, uint matchId, uint userId)private view returns(Tournament storage, Match storage, Bet storage){
         var (t,m) = getTournamentMatch(tournamentId,matchId);
-        require( userId>0 && userId<t.nextUserId);
+        require(userId>0 && userId<t.nextUserId);
         return (t,m,m.bets[userId]);
      }
      
@@ -375,33 +403,13 @@ contract SportsPool is owned, mortal, priced, timed {
      function getTournamentMatchBet(uint tournamentId, uint matchId)private view returns(Tournament storage, Match storage, Bet storage){
         var (t,m) = getTournamentMatch(tournamentId,matchId);
         uint userId = t.userIds[msg.sender];
-        require( userId>0 && userId<t.nextUserId);
+        require(userId>0 && userId<t.nextUserId);
         return (t,m,m.bets[userId]);
      }
-
-    //get tournament and match touple
-    function getTournamentMatchBet(uint tournamentId, uint matchId, address userAddress)private view returns(Tournament storage, Match storage, Bet storage){
-        var (t,m) = getTournamentMatch(tournamentId,matchId);
-        uint userId = t.userIds[userAddress];
-        require( userId>0 && userId<t.nextUserId);
-        return (t,m,m.bets[userId]);
-    }
 
     // Gets winner status depending on users bets
     function isWinner(uint tournamentId, uint matchId, uint userId) private view returns(bool){
         var (,m,b) = getTournamentMatchBet(tournamentId,matchId,userId);
-        if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
-            return true;
-        }
-        return false;
-    }
-
-    // Gets winner status depending on users bets
-    function isWinner(uint tournamentId, uint matchId, address userAddress) private view returns(bool){
-        var (,m,b) = getTournamentMatchBet(tournamentId,matchId,userAddress);
-        if(b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB){
-            return true;
-        }
-        return false;
+        return (b.initialized && b.scoreTeamA==m.scoreTeamA && b.scoreTeamB==m.scoreTeamB);
     }
 }
