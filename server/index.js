@@ -5,6 +5,7 @@ const volleyball = require('volleyball');
 const DBReader = require('./db_reader');
 const DBWriter = require('./db_writer');
 const bodyParser = require('body-parser')
+const CONST = require('./db_constants');
 
 
 app.use(volleyball);
@@ -18,12 +19,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
 })); 
 
-app.use(function (err, req, res, next) {
-  console.error(err);
-  console.error(err.stack);
-  res.status(err.status || 500).send(err.message || 'Internal server error.');
-});
-
 app.get('/tournament', function (request, response) {
 	var id = parseInt(request.query.id);
 	console.log("id="+id);
@@ -34,7 +29,7 @@ app.get('/tournament', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("tournaments error:"+error);
 		response.end();
 	});
@@ -49,7 +44,7 @@ app.get('/tournaments', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("tournaments error:"+error);
 		response.end();
 	});
@@ -66,7 +61,7 @@ app.get('/matches', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("matches error:"+error);
 		response.end();
 	});
@@ -83,7 +78,7 @@ app.get('/match', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("match error:"+error);
 		response.end();
 	});
@@ -100,7 +95,7 @@ app.post('/tournament', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("add tournament error:"+error);
 		response.end();
 	});
@@ -117,7 +112,7 @@ app.post('/match', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("add match error:"+error);
 		response.end();
 	});
@@ -134,7 +129,7 @@ app.post('/matchScore', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("add match scores error:"+error);
 		response.end();
 	});
@@ -151,11 +146,27 @@ app.post('/team', function (request, response) {
 		response.end();
 	},
 	function(error){
-		response.write('{"error":"Oops!"}');
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
 		console.log("add team error:"+error);
 		response.end();
 	});
 	
+});
+
+//custom error handling
+function addErrorData(response, code, error){
+	response.status(400);
+	var err = CONST.ERROR_RESPONSE;
+	err.status_code = code;
+	err.status_message = error;
+	response.write(JSON.stringify(err));
+}
+
+//general error handling
+app.use(function (err, req, res, next) {
+  console.error(err);
+  console.error(err.stack);
+  res.status(err.status || 500).send(err.message || 'Internal server error :( ');
 });
 
 //redirect home if paths are unknown

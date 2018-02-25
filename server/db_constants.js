@@ -9,5 +9,13 @@ module.exports=
 	DB_GUEST_PASSWORD : "password",
 	TOURNAMENT : "tournament",
 	MATCH : "match",
-	TEAM : "team"
+	TEAM : "team",
+	ERROR_RESPONSE : {
+		status_message:"No error details were provided",
+		status_code:0
+	},
+	ERROR_CODES:{
+		INPUT_ERROR : 0,
+		DATABASE_ERROR:1,
+	}
 }
