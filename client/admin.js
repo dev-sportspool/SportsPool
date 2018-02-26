@@ -1,9 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from './App'
+import AdminApp from './AdminApp'
 
 ReactDOM.render(
-  <App />,
+  <AdminApp />,
   document.getElementById('root')
 );
-

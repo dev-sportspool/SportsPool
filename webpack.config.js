@@ -2,9 +2,12 @@ let path = require('path');
 let LiveReloadPlugin = require('webpack-livereload-plugin');
 
 module.exports = {
-  entry: './client/index.js',
+entry: {
+		index:'./client/index.js',
+		admin:'./client/admin.js'
+	},
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'client/dist')
   },
   context: __dirname,

@@ -13,16 +13,19 @@ class App extends Component {
     super(props)
 
     this.state = {
-      storageValue: 0,
-      web3: null
+      web3: null,
+	  tournaments: null
     }
+  }
+  componentDidMount() {
+    this.getTournaments();
   }
 
   componentWillMount() {
     // Get network provider and web3 instance.
     // See utils/getWeb3 for more info.
 
-    getWeb3
+    /* getWeb3
     .then(results => {
       this.setState({
         web3: results.web3
@@ -33,7 +36,7 @@ class App extends Component {
     })
     .catch(() => {
       console.log('Error finding web3.')
-    })
+    }) */
   }
 
   instantiateContract() {
@@ -44,7 +47,7 @@ class App extends Component {
      * state management library, but for convenience I've placed them here.
      */
 
-    const contract = require('truffle-contract')
+    /* const contract = require('truffle-contract')
 
 	
 	const sportsPool = contract(SportsPoolContract)
@@ -67,11 +70,32 @@ class App extends Component {
     })
 	  
 	  
-    })
+    }) */
 	
+  }
+  
+  getTournaments(){
+	  this.setState((prevState, props) => ({
+		  tournaments: null
+		}));
+	  $.getJSON('/tournaments')
+      .then((results) =>{
+		this.setState((prevState, props) => ({
+		  tournaments: results
+		}));
+	  });
   }
 
   render() {
+	  var tournaments;
+	  if(this.state.tournaments!=null){
+		   tournaments= this.state.tournaments.map((tournament, i )=>(
+			   <div key={tournament._id}>
+				{i}) {tournament.name},
+			   </div>
+		  ));
+	  }
+	  tournaments = tournaments==null?"LOADING...":tournaments;
     return (
       <div>
 	  <nav className="navbar pure-menu pure-menu-horizontal">
@@ -83,7 +107,7 @@ class App extends Component {
           <div className="pure-g">
             <div className="pure-u-1-1">
               <h1>Available Tournaments!</h1>
-			  <p>The pool details: {this.state.poolInfo}</p>
+			  {tournaments}
             </div>
           </div>
         </main>

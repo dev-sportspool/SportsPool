@@ -109,6 +109,7 @@ contract SportsPool is owned, mortal, priced, timed {
      **/
 
     event TournamentJoinedWithBet(address indexed _from, uint _value, uint tournamentId, uint matchId);
+	event TournamentAdded(address indexed _from, uint tournamentId);
     event MatchAdded(address indexed _from, uint tournamentId, uint matchId);
     event MatchEdited(address indexed _from, uint tournamentId, uint matchId);
     event MatchEnded(address indexed _from, uint tournamentId, uint matchId);
@@ -134,6 +135,9 @@ contract SportsPool is owned, mortal, priced, timed {
     function addTournament() public onlyOwner{
         tournaments[nextTournamentId] = Tournament({id:nextTournamentId, nextMatchId:INITIAL_ID, nextUserId:INITIAL_ID, finished:false});
         nextTournamentId++;
+		
+		// Event
+        TournamentAdded(msg.sender, nextTournamentId-1);
     }
     
     //Add match to a tournament
@@ -145,7 +149,7 @@ contract SportsPool is owned, mortal, priced, timed {
         t.nextMatchId++;
 
         // Event
-        MatchAdded(msg.sender, tournamentId, t.nextMatchId);
+        MatchAdded(msg.sender, tournamentId, t.nextMatchId-1);
     }
     
     // Edits an existing match

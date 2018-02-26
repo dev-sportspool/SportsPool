@@ -170,7 +170,17 @@ app.use(function (err, req, res, next) {
 });
 
 //redirect home if paths are unknown
-app.get('/', function (request, response) {
+/* app.get('/', function (request, response) {
+  response.sendFile(path.resolve(__dirname, '..', 'client', 'index.html'))
+}); */
+
+app.get('/admin', function (request, response) {
+	console.log("serving admin.html");
+  response.sendFile(path.resolve(__dirname, '..', 'client', 'admin.html'))
+});
+
+app.get('/index', function (request, response) {
+	console.log("serving index.html");
   response.sendFile(path.resolve(__dirname, '..', 'client', 'index.html'))
 });
 

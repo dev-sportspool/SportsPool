@@ -63,7 +63,6 @@
     "truffle-hdwallet-provider": "0.0.3"
   },
   "scripts": {
-    "_start": "node scripts/start.js",
     "start": "nodemon server/index.js",
     "build": "webpack -w",
     "test": "echo \"Error: no test specified\" && exit 1"
