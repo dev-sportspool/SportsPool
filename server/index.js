@@ -85,6 +85,21 @@ app.get('/match', function (request, response) {
 	
 });
 
+app.get('/teams', function (request, response) {
+	response.setHeader('Content-Type', 'application/json');
+	(new DBReader()).getTeams(function(result){
+		console.log("teams success:"+result);
+		response.write(JSON.stringify(result));
+		response.end();
+	},
+	function(error){
+		addErrorData(response,CONST.ERROR_CODES.DATABASE_ERROR,error);
+		console.log("tournaments error:"+error);
+		response.end();
+	});
+	
+});
+
 app.post('/tournament', function (request, response) {
 	var obj = request.body
 	console.log("obj="+JSON.stringify(obj));

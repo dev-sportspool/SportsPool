@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import getWeb3 from '../utils/getWeb3'
 import AddTournament from './AddTournament'
+import AddTeam from './AddTeam'
 
 import '../css/oswald.css'
 import '../css/open-sans.css'
@@ -24,6 +25,7 @@ class App extends Component {
       <div>
 	  <p> Oh hai there!</p>
 	  <AddTournament />
+	  <AddTeam />
       </div>
     );
   }

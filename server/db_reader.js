@@ -39,6 +39,24 @@ var DBReader = class DBReader{
 		});
 	}
 	
+	getTeams( success, failure){
+		MongoClient.connect("mongodb://"+CONST.DB_GUEST_USERNAME+":"+CONST.DB_GUEST_PASSWORD+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
+		  if (err) failure(err);
+		  var database = db.db(CONST.DB_ADDRESS);
+			database.collection(CONST.TEAM)
+			.find({})
+			.toArray()
+			.then(function(result){
+				success(result);
+				db.close();
+			})
+			.catch(function(err){
+				failure(err);
+				db.close();
+			});
+		});
+	}
+	
 	getMatches(t_id, success, failure){
 		MongoClient.connect("mongodb://"+CONST.DB_GUEST_USERNAME+":"+CONST.DB_GUEST_PASSWORD+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
 		  if (err) failure(err);
