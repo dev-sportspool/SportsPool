@@ -175,13 +175,21 @@ app.use(function (err, req, res, next) {
 }); */
 
 app.get('/admin', function (request, response) {
-	console.log("serving admin.html");
-  response.sendFile(path.resolve(__dirname, '..', 'client', 'admin.html'))
+	var p = path.resolve(__dirname, '../client', 'admin', 'admin.html');
+	console.log("serving "+p);
+	response.sendFile(p);
 });
 
 app.get('/index', function (request, response) {
-	console.log("serving index.html");
-  response.sendFile(path.resolve(__dirname, '..', 'client', 'index.html'))
+	var p = path.resolve(__dirname, '../client', 'home', 'index.html');
+	console.log("serving "+p);
+	response.sendFile(p);
+});
+
+app.get('/', function (request, response) {
+	var p = path.resolve(__dirname, '../client', 'home', 'index.html');
+	console.log("serving "+p);
+	response.sendFile(p);
 });
 
 //listen on port 3000

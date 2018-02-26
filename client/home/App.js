@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import SimpleStorageContract from '../build/contracts/SimpleStorage.json'
-import SportsPoolContract from '../build/contracts/SportsPool.json'
-import getWeb3 from './utils/getWeb3'
+import SportsPoolContract from '../../build/contracts/SportsPool.json'
+import getWeb3 from '../utils/getWeb3'
 
-import './css/oswald.css'
-import './css/open-sans.css'
-import './css/pure-min.css' 
-import './App.css'
+import '../css/oswald.css'
+import '../css/open-sans.css'
+import '../css/pure-min.css' 
+import '../css/App.css'
 
 class App extends Component {
   constructor(props) {

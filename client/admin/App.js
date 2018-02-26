@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
-import SportsPoolContract from '../build/contracts/SportsPool.json'
-import getWeb3 from './utils/getWeb3'
+import getWeb3 from '../utils/getWeb3'
 import AddTournament from './AddTournament'
 
-import './css/oswald.css'
-import './css/open-sans.css'
-import './css/pure-min.css' 
-import './App.css'
+import '../css/oswald.css'
+import '../css/open-sans.css'
+import '../css/pure-min.css' 
+import '../css/App.css'
 
-class AdminApp extends Component {
+class App extends Component {
   constructor(props) {
     super(props)
   }
@@ -30,4 +29,4 @@ class AdminApp extends Component {
   }
 }
 
-export default AdminApp
+export default App
