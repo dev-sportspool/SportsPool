@@ -124,8 +124,8 @@ class AddTournament extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username: 'admin',
-                password: 'p4553o7d',
+                username: this.props.username,
+                password: this.props.password,
                 id: id,
                 name: this.tournamentNameInput.value,
                 description: this.tournamentDescriptionInput.value,

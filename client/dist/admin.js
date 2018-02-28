@@ -76475,7 +76475,7 @@ module.exports = Jsonrpc;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -76500,6 +76500,10 @@ var _AddMatch = __webpack_require__(326);
 
 var _AddMatch2 = _interopRequireDefault(_AddMatch);
 
+var _AddCredentials = __webpack_require__(379);
+
+var _AddCredentials2 = _interopRequireDefault(_AddCredentials);
+
 __webpack_require__(85);
 
 __webpack_require__(84);
@@ -76517,39 +76521,72 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var App = function (_Component) {
-  _inherits(App, _Component);
+	_inherits(App, _Component);
 
-  function App(props) {
-    _classCallCheck(this, App);
+	function App(props) {
+		_classCallCheck(this, App);
 
-    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
-  }
+		var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
 
-  _createClass(App, [{
-    key: 'componentWillMount',
-    value: function componentWillMount() {}
-  }, {
-    key: 'componentDidMount',
-    value: function componentDidMount() {}
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'p',
-          null,
-          ' Oh hai there!'
-        ),
-        _react2.default.createElement(_AddTournament2.default, null),
-        _react2.default.createElement(_AddTeam2.default, null),
-        _react2.default.createElement(_AddMatch2.default, null)
-      );
-    }
-  }]);
+		_this.state = {
+			username: null,
+			password: null
+		};
+		return _this;
+	}
 
-  return App;
+	_createClass(App, [{
+		key: 'componentWillMount',
+		value: function componentWillMount() {}
+	}, {
+		key: 'componentDidMount',
+		value: function componentDidMount() {}
+	}, {
+		key: 'onLogin',
+		value: function onLogin(uname, pword) {
+			//todo: validate with api call?
+			this.setState(function (prevState, props) {
+				return {
+					username: uname,
+					password: pword
+				};
+			});
+		}
+	}, {
+		key: 'render',
+		value: function render() {
+			var content = null;
+			if (this.state.username != null && this.state.password != null) {
+				content = _react2.default.createElement(
+					'div',
+					null,
+					_react2.default.createElement(
+						'p',
+						null,
+						' Admin Console:'
+					),
+					_react2.default.createElement(_AddTournament2.default, {
+						username: this.state.username,
+						password: this.state.password }),
+					_react2.default.createElement(_AddTeam2.default, {
+						username: this.state.username,
+						password: this.state.password }),
+					_react2.default.createElement(_AddMatch2.default, {
+						username: this.state.username,
+						password: this.state.password })
+				);
+			} else {
+				content = _react2.default.createElement(_AddCredentials2.default, { onLogin: this.onLogin.bind(this) });
+			}
+			return _react2.default.createElement(
+				'div',
+				null,
+				content
+			);
+		}
+	}]);
+
+	return App;
 }(_react.Component);
 
 exports.default = App;
@@ -76702,8 +76739,8 @@ var AddMatch = function (_Component) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: 'admin',
-                    password: 'p4553o7d',
+                    username: this.props.username,
+                    password: this.props.password,
                     id: matchId,
                     tournament_id: tournamentId,
                     date_str: '2018-06-14T00:00:00.000Z',
@@ -77056,8 +77093,8 @@ var AddTeam = function (_Component) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: 'admin',
-                    password: 'p4553o7d',
+                    username: this.props.username,
+                    password: this.props.password,
                     id: this.teamIDInput.value,
                     name: this.teamNameInput.value,
                     country: this.teamCountryInput.value,
@@ -77316,8 +77353,8 @@ var AddTournament = function (_Component) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    username: 'admin',
-                    password: 'p4553o7d',
+                    username: this.props.username,
+                    password: this.props.password,
                     id: id,
                     name: this.tournamentNameInput.value,
                     description: this.tournamentDescriptionInput.value,
@@ -83943,6 +83980,109 @@ if (typeof window !== "undefined") {
 
 module.exports = XMLHttpRequest;
 
+
+/***/ }),
+/* 379 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(39);
+
+var _react2 = _interopRequireDefault(_react);
+
+__webpack_require__(85);
+
+__webpack_require__(84);
+
+__webpack_require__(86);
+
+__webpack_require__(83);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AddCredentials = function (_Component) {
+    _inherits(AddCredentials, _Component);
+
+    function AddCredentials(props) {
+        _classCallCheck(this, AddCredentials);
+
+        var _this = _possibleConstructorReturn(this, (AddCredentials.__proto__ || Object.getPrototypeOf(AddCredentials)).call(this, props));
+
+        _this.handleLogin = _this.handleLogin.bind(_this);
+        _this.state = {};
+        return _this;
+    }
+
+    _createClass(AddCredentials, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {}
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {}
+    }, {
+        key: 'handleLogin',
+        value: function handleLogin(event) {
+            if (this.props.onLogin != null) {
+                this.props.onLogin(this.usernameInput.value, this.passwordInput.value);
+            } else {
+                console.log("please set onLogin listener");
+            }
+            event.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'p',
+                    null,
+                    'Login:'
+                ),
+                _react2.default.createElement(
+                    'form',
+                    { onSubmit: this.handleLogin },
+                    _react2.default.createElement(
+                        'label',
+                        null,
+                        'Username:',
+                        _react2.default.createElement('input', { value: 'admin', type: 'text', ref: function ref(input) {
+                                return _this2.usernameInput = input;
+                            } }),
+                        _react2.default.createElement('br', null),
+                        'Password:',
+                        _react2.default.createElement('input', { value: 'p4553o7d', type: 'text', ref: function ref(input) {
+                                return _this2.passwordInput = input;
+                            } }),
+                        _react2.default.createElement('br', null),
+                        _react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+                    )
+                )
+            );
+        }
+    }]);
+
+    return AddCredentials;
+}(_react.Component);
+
+exports.default = AddCredentials;
 
 /***/ })
 /******/ ]);

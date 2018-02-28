@@ -62,8 +62,8 @@ class AddTeam extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username: 'admin',
-                password: 'p4553o7d',
+                username: this.props.username,
+                password: this.props.password,
                 id: this.teamIDInput.value,
                 name: this.teamNameInput.value,
                 country: this.teamCountryInput.value,

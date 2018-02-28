@@ -30,6 +30,7 @@ var DBWriter = class DBWriter{
 		MongoClient.connect("mongodb://"+username+":"+password+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
 		  if (err) throw err;
 		  console.log("Connected to db :"+db);
+		  //todo: match id is per tournament in contract. in mongo id is global. needs fixing
 		  var database = db.db(CONST.DB_ADDRESS);
 			  database.collection(CONST.MATCH).insert({
 				  _id:id,
