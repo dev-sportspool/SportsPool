@@ -21,6 +21,9 @@ contract('SportsPool', function(accounts){
 	testMatch(owner,player,tournamentId, 2,TEAM_A_ID,TEAM_B_ID,COST,DEV_FEE,BET_END_TIME);
 	testMatchSetScores(owner, player,tournamentId,2,0,0);
 	
+	// Circuit Breaker (Change to false for halting usage)
+	testCircuitBreaker(owner, true);
+
 	console.log("================FOR EACH PLAYER================");
 	for(var i=1; i<9; i++){ //starting from 1 as 0 is owner of contract, 8 players total
 	
@@ -180,6 +183,18 @@ function testPayout(owner, player, tournamentId,matchId,isWinner){
 				//check contract's balance?
 			}); 
 		});
+}
+
+function testCircuitBreaker(owner, enable){
+	it("Applying Circuit Breaker", function(){
+		var meta ;
+		return SportsPool.deployed().then(function(instance) {
+			meta = instance;
+			return meta.setEnabled(enable,{from: owner});
+		}).then(function(result){
+			logResponse("Circuit Breaker ",enable?"enabled":"disabled");			
+		});
+	});
 }
 
 function printMatchBets(owner, player, tournamentId,matchId){

@@ -1,29 +1,29 @@
 pragma solidity ^0.4.2;
 
 contract owned {
-    function owned() public { owner = msg.sender; }
     address owner;
+    bool enabled; // Circuit breaker flag to enable/disable functionality of contract
 
-    // This contract only defines a modifier but does not use
-    // it: it will be used in derived contracts.
-    // The function body is inserted where the special symbol
-    // `_;` in the definition of a modifier appears.
-    // This means that if the owner calls this function, the
-    // function is executed and otherwise, an exception is
-    // thrown.
+    function owned() public {
+        owner = msg.sender;
+    }
+
+    function kill() public onlyOwner {
+        selfdestruct(owner);
+    }
+
+    function setEnabled(bool enable) public onlyOwner {
+        enabled = enable;
+    }
+
+    modifier isEnabled {
+        require(enabled);
+        _;
+    }
+
     modifier onlyOwner {
         require(msg.sender == owner);
         _;
-    }
-}
-
-contract mortal is owned {
-    // This contract inherits the `onlyOwner` modifier from
-    // `owned` and applies it to the `close` function, which
-    // causes that calls to `kill` only have an effect if
-    // they are made by the stored owner.
-    function kill() public onlyOwner {
-        selfdestruct(owner);
     }
 }
 
@@ -54,7 +54,7 @@ contract timed {
 }
 
 
-contract SportsPool is owned, mortal, priced, timed {
+contract SportsPool is owned, priced, timed {
 
     /**
      *  Structs
@@ -197,6 +197,7 @@ contract SportsPool is owned, mortal, priced, timed {
     function joinTournamentMatchWithBet( uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB)
         public payable costs(tournaments[tournamentId].matches[matchId].priceWei)
                        inTime(tournaments[tournamentId].matches[matchId].betEndTime)
+                        isEnabled
     {
         require(scoreTeamA>=0 && scoreTeamB>=0 && !tournaments[tournamentId].matches[matchId].cancelled);
 
@@ -217,6 +218,7 @@ contract SportsPool is owned, mortal, priced, timed {
     // Edit an existing Bet for a given Match
     function editBet(uint tournamentId, uint matchId, int scoreTeamA, int scoreTeamB)
         public inTime(tournaments[tournamentId].matches[matchId].betEndTime)
+                isEnabled
     {
         require(scoreTeamA>=0 && scoreTeamB>=0 && !tournaments[tournamentId].matches[matchId].cancelled);
 
@@ -231,7 +233,7 @@ contract SportsPool is owned, mortal, priced, timed {
     }
 
     //user request for payout
-    function getPayout(uint tournamentId, uint matchId) public payable{
+    function getPayout(uint tournamentId, uint matchId) public payable isEnabled{
         // If match is cancelled there is no payout to give
         require(!tournaments[tournamentId].matches[matchId].cancelled);
 
