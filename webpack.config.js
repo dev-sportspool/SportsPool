@@ -4,7 +4,8 @@ let LiveReloadPlugin = require('webpack-livereload-plugin');
 module.exports = {
 entry: {
 		index:'./client/home/index.js',
-		admin:'./client/admin/index.js'
+		admin:'./client/admin/index.js',
+    terms:'./client/terms/index.js'
 	},
   output: {
     filename: '[name].js',

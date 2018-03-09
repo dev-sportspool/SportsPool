@@ -1,0 +1,10 @@
+body {
+  font: 12px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+}
+
+.terms {
+	height: 200px;
+	width: 500px;
+	resize: none;
+}

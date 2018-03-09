@@ -202,6 +202,12 @@ app.get('/index', function(request, response) {
     response.sendFile(p);
 });
 
+app.get('/terms', function(request, response) {
+    var p = path.resolve(__dirname, '../client', 'terms', 'terms.html');
+    console.log("serving " + p);
+    response.sendFile(p);
+});
+
 app.get('/', function(request, response) {
     var p = path.resolve(__dirname, '../client', 'home', 'index.html');
     console.log("serving " + p);
