@@ -21,12 +21,12 @@ MongoClient.connect("mongodb://"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/", functio
 		  return database.createCollection(CONST.TEAM); 
 		}).then(function(result) {
 		  console.log("Created "+CONST.TEAM+" collection:"+result);
-		  return database.addUser (CONST.DB_ADMIN_USERNAME,CONST.DB_ADMIN_PASSWORD, {roles:[{ role: "dbAdminAnyDatabase", db: "admin" },{ role: "userAdminAnyDatabase", db: "admin" },{ role: "readWriteAnyDatabase", db: "admin" }]} );
+		  return database.addUser (CONST.DB_GUEST_USERNAME,CONST.DB_GUEST_PASSWORD, {roles:[{ role: "readAnyDatabase", db: "admin" }]} );
 		}).then(function(result){
-			console.log("Created admin user:"+result);
-			return database.addUser (CONST.DB_GUEST_USERNAME,CONST.DB_GUEST_PASSWORD, {roles:[{ role: "read", db: CONST.DB_NAME }]} );
+			console.log("Created guest user:"+JSON.stringify(result));
+			return database.addUser (CONST.DB_ADMIN_USERNAME,CONST.DB_ADMIN_PASSWORD, {roles:[{ role: "dbAdminAnyDatabase", db: "admin" },{ role: "userAdminAnyDatabase", db: "admin" },{ role: "readWriteAnyDatabase", db: "admin" }]} );
 		}).then(function(result){
-			console.log("Created guest user:"+result);
+			console.log("Created admin user:"+JSON.stringify(result));
 			console.log("Setup completed successfully!");
 			db.close();
 		}).catch(function(ex){

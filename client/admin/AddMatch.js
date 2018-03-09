@@ -113,9 +113,9 @@ class AddMatch extends Component {
             body: JSON.stringify({
                 username: this.props.username,
                 password: this.props.password,
-                id: matchId,
+                match_number: matchId,
 				tournament_id:tournamentId,
-				date_str:'2018-06-14T00:00:00.000Z',
+				date_time_stamp:this.matchTimeInput.value ,
                 bet_cutoff_minutes: 60,
                 state: 0,
 				team_a_id:this.state.team_a_id,
@@ -211,7 +211,7 @@ class AddMatch extends Component {
 	
 	createMatchesList(){
 		return this.state.matches.map((match, i) => ( 
-					<text key={match._id}>{match._id},</text>
+					<text key={match.match_number}>{match.match_number},</text>
 				));
 	}
 	
