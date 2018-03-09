@@ -60,3 +60,7 @@ typings/
 # database generated files
 data/
 
+# IDEA
+.idea
+
+.idea/vcs.xml
