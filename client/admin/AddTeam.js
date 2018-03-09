@@ -91,22 +91,29 @@ class AddTeam extends Component {
         }
         teams = teams == null ? "LOADING..." : teams;
         return (
-            <div>
-	  <p>Existing Teams</p>
+            <div className="w3-container">
+	  
+	  <h2>Existing Teams</h2>
 	  {teams}
-	  <p>Add new Team</p>
 	  <form onSubmit={this.handleCreateTeam}>
 	    <label>
 			ID:
-			<input type="text" ref={(input) => this.teamIDInput = input}/>
+			<input className="w3-input" 
+				type="text" 
+				ref={(input) => this.teamIDInput = input}/>
 			<br />
 			Name:
-			<input type="text" ref={(input) => this.teamNameInput = input}/>
+			<input className="w3-input" 
+				type="text" 
+				ref={(input) => this.teamNameInput = input}/>
 			<br />
 			Description:
-			<input type="text" ref={(input) => this.teamCountryInput = input}/>
+			<input className="w3-input" 
+				type="text" 
+				ref={(input) => this.teamCountryInput = input}/>
 			<br />
-			<input type="submit" value="Submit" />
+			<input className="w3-btn w3-blue w3-margin-top w3-margin-bottom"
+					type="submit" value="Submit" />
 		</label>
 	  </form>
       </div>

@@ -56202,7 +56202,7 @@ exports = module.exports = __webpack_require__(41)(undefined);
 
 
 // module
-exports.push([module.i, "/* PAGE */\nbody,\n.pure-g [class*=pure-u] {\n  font-family: 'Open Sans', sans-serif; }\n\nh1, h2, h3 {\n  font-family: 'Oswald', 'Arial Narrow', sans-serif; }\n\ncode {\n  display: block;\n  margin: 20px 0 15px 0;\n  padding: 10px;\n  background: #eee; }\n\n.container {\n  box-sizing: border-box;\n  width: 100%;\n  padding: 45px 20px; }\n\n.pure-button-primary {\n  background-color: #0c1a2b; }\n\n.pure-button-primary:hover {\n  background-color: #233e5e; }\n\n.pure-form input[type=\"text\"]:focus {\n  border-color: #0c1a2b; }\n\n/* NAVBAR */\n.navbar {\n  position: fixed;\n  padding: 5px;\n  background: #0c1a2b;\n  font-family: 'Oswald', 'Arial Narrow', sans-serif; }\n\n.navbar a {\n  color: #fff; }\n\n.navbar a:active,\n.navbar a:focus,\n.navbar a:hover {\n  background: #233e5e; }\n\n.navbar .pure-menu-heading {\n  font-weight: bold;\n  text-transform: none; }\n\n.navbar .navbar-right {\n  float: right; }\n\n.navbar .uport-logo {\n  height: 16px;\n  margin-right: 10px; }\n", ""]);
+exports.push([module.i, "/* PAGE */\nbody,\n.pure-g [class*=pure-u] {\n  font-family: 'Open Sans', sans-serif; }\n\nh1, h2, h3 {\n  font-family: 'Oswald', 'Arial Narrow', sans-serif; }\n\ncode {\n  display: block;\n  margin: 20px 0 15px 0;\n  padding: 10px;\n  background: #eee; }\n\n.container {\n  box-sizing: border-box;\n  width: 100%;\n  padding: 45px 20px; }\n\n.pure-button-primary {\n  background-color: #0c1a2b; }\n\n.pure-button-primary:hover {\n  background-color: #233e5e; }\n\n.pure-form input[type=\"text\"]:focus {\n  border-color: #0c1a2b; }\n\n/* NAVBAR */\n.navbar {\n  position: fixed;\n  padding: 5px;\n  background: #0c1a2b;\n  font-family: 'Oswald', 'Arial Narrow', sans-serif; }\n\n.navbar a {\n  color: #fff; }\n\n.navbar a:active,\n.navbar a:focus,\n.navbar a:hover {\n  background: #233e5e; }\n\n.navbar .pure-menu-heading {\n  font-weight: bold;\n  text-transform: none; }\n\n.navbar .navbar-right {\n  float: right; }\n\n.navbar .uport-logo {\n  height: 16px;\n  margin-right: 10px; }\n\n/* MATERIAL STYLES */\n/* W3.CSS 4.10 February 2018 by Jan Egil and Borge Refsnes */\nhtml {\n  box-sizing: border-box; }\n\n*, *:before, *:after {\n  box-sizing: inherit; }\n\n/* Extract from normalize.css by Nicolas Gallagher and Jonathan Neal git.io/normalize */\nhtml {\n  -ms-text-size-adjust: 100%;\n  -webkit-text-size-adjust: 100%; }\n\nbody {\n  margin: 0; }\n\narticle, aside, details, figcaption, figure, footer, header, main, menu, nav, section, summary {\n  display: block; }\n\naudio, canvas, progress, video {\n  display: inline-block; }\n\nprogress {\n  vertical-align: baseline; }\n\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n[hidden], template {\n  display: none; }\n\na {\n  background-color: transparent;\n  -webkit-text-decoration-skip: objects; }\n\na:active, a:hover {\n  outline-width: 0; }\n\nabbr[title] {\n  border-bottom: none;\n  text-decoration: underline;\n  text-decoration: underline dotted; }\n\ndfn {\n  font-style: italic; }\n\nmark {\n  background: #ff0;\n  color: #000; }\n\nsmall {\n  font-size: 80%; }\n\nsub, sup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsub {\n  bottom: -0.25em; }\n\nsup {\n  top: -0.5em; }\n\nfigure {\n  margin: 1em 40px; }\n\nimg {\n  border-style: none; }\n\nsvg:not(:root) {\n  overflow: hidden; }\n\ncode, kbd, pre, samp {\n  font-family: monospace,monospace;\n  font-size: 1em; }\n\nhr {\n  box-sizing: content-box;\n  height: 0;\n  overflow: visible; }\n\nbutton, input, select, textarea {\n  font: inherit;\n  margin: 0; }\n\noptgroup {\n  font-weight: bold; }\n\nbutton, input {\n  overflow: visible; }\n\nbutton, select {\n  text-transform: none; }\n\nbutton, html [type=button], [type=reset], [type=submit] {\n  -webkit-appearance: button; }\n\nbutton::-moz-focus-inner, [type=button]::-moz-focus-inner, [type=reset]::-moz-focus-inner, [type=submit]::-moz-focus-inner {\n  border-style: none;\n  padding: 0; }\n\nbutton:-moz-focusring, [type=button]:-moz-focusring, [type=reset]:-moz-focusring, [type=submit]:-moz-focusring {\n  outline: 1px dotted ButtonText; }\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: .35em .625em .75em; }\n\nlegend {\n  color: inherit;\n  display: table;\n  max-width: 100%;\n  padding: 0;\n  white-space: normal; }\n\ntextarea {\n  overflow: auto; }\n\n[type=checkbox], [type=radio] {\n  padding: 0; }\n\n[type=number]::-webkit-inner-spin-button, [type=number]::-webkit-outer-spin-button {\n  height: auto; }\n\n[type=search] {\n  -webkit-appearance: textfield;\n  outline-offset: -2px; }\n\n[type=search]::-webkit-search-cancel-button, [type=search]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n::-webkit-input-placeholder {\n  color: inherit;\n  opacity: 0.54; }\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button;\n  font: inherit; }\n\n/* End extract */\nhtml, body {\n  font-family: Verdana,sans-serif;\n  font-size: 15px;\n  line-height: 1.5; }\n\nhtml {\n  overflow-x: hidden; }\n\nh1 {\n  font-size: 36px; }\n\nh2 {\n  font-size: 30px; }\n\nh3 {\n  font-size: 24px; }\n\nh4 {\n  font-size: 20px; }\n\nh5 {\n  font-size: 18px; }\n\nh6 {\n  font-size: 16px; }\n\n.w3-serif {\n  font-family: serif; }\n\nh1, h2, h3, h4, h5, h6 {\n  font-family: \"Segoe UI\",Arial,sans-serif;\n  font-weight: 400;\n  margin: 10px 0; }\n\n.w3-wide {\n  letter-spacing: 4px; }\n\nhr {\n  border: 0;\n  border-top: 1px solid #eee;\n  margin: 20px 0; }\n\n.w3-image {\n  max-width: 100%;\n  height: auto; }\n\nimg {\n  vertical-align: middle; }\n\na {\n  color: inherit; }\n\n.w3-table, .w3-table-all {\n  border-collapse: collapse;\n  border-spacing: 0;\n  width: 100%;\n  display: table; }\n\n.w3-table-all {\n  border: 1px solid #ccc; }\n\n.w3-bordered tr, .w3-table-all tr {\n  border-bottom: 1px solid #ddd; }\n\n.w3-striped tbody tr:nth-child(even) {\n  background-color: #f1f1f1; }\n\n.w3-table-all tr:nth-child(odd) {\n  background-color: #fff; }\n\n.w3-table-all tr:nth-child(even) {\n  background-color: #f1f1f1; }\n\n.w3-hoverable tbody tr:hover, .w3-ul.w3-hoverable li:hover {\n  background-color: #ccc; }\n\n.w3-centered tr th, .w3-centered tr td {\n  text-align: center; }\n\n.w3-table td, .w3-table th, .w3-table-all td, .w3-table-all th {\n  padding: 8px 8px;\n  display: table-cell;\n  text-align: left;\n  vertical-align: top; }\n\n.w3-table th:first-child, .w3-table td:first-child, .w3-table-all th:first-child, .w3-table-all td:first-child {\n  padding-left: 16px; }\n\n.w3-btn, .w3-button {\n  border: none;\n  display: inline-block;\n  padding: 8px 16px;\n  vertical-align: middle;\n  overflow: hidden;\n  text-decoration: none;\n  color: inherit;\n  background-color: inherit;\n  text-align: center;\n  cursor: pointer;\n  white-space: nowrap; }\n\n.w3-btn:hover {\n  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }\n\n.w3-btn, .w3-button {\n  -webkit-touch-callout: none;\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none; }\n\n.w3-disabled, .w3-btn:disabled, .w3-button:disabled {\n  cursor: not-allowed;\n  opacity: 0.3; }\n\n.w3-disabled *, :disabled * {\n  pointer-events: none; }\n\n.w3-btn.w3-disabled:hover, .w3-btn:disabled:hover {\n  box-shadow: none; }\n\n.w3-badge, .w3-tag {\n  background-color: #000;\n  color: #fff;\n  display: inline-block;\n  padding-left: 8px;\n  padding-right: 8px;\n  text-align: center; }\n\n.w3-badge {\n  border-radius: 50%; }\n\n.w3-ul {\n  list-style-type: none;\n  padding: 0;\n  margin: 0; }\n\n.w3-ul li {\n  padding: 8px 16px;\n  border-bottom: 1px solid #ddd; }\n\n.w3-ul li:last-child {\n  border-bottom: none; }\n\n.w3-tooltip, .w3-display-container {\n  position: relative; }\n\n.w3-tooltip .w3-text {\n  display: none; }\n\n.w3-tooltip:hover .w3-text {\n  display: inline-block; }\n\n.w3-ripple:active {\n  opacity: 0.5; }\n\n.w3-ripple {\n  transition: opacity 0s; }\n\n.w3-input {\n  padding: 8px;\n  display: block;\n  border: none;\n  border-bottom: 1px solid #ccc;\n  width: 100%; }\n\n.w3-select {\n  padding: 9px 0;\n  width: 100%;\n  border: none;\n  border-bottom: 1px solid #ccc; }\n\n.w3-dropdown-click, .w3-dropdown-hover {\n  position: relative;\n  display: inline-block;\n  cursor: pointer; }\n\n.w3-dropdown-hover:hover .w3-dropdown-content {\n  display: block; }\n\n.w3-dropdown-hover:first-child, .w3-dropdown-click:hover {\n  background-color: #ccc;\n  color: #000; }\n\n.w3-dropdown-hover:hover > .w3-button:first-child, .w3-dropdown-click:hover > .w3-button:first-child {\n  background-color: #ccc;\n  color: #000; }\n\n.w3-dropdown-content {\n  cursor: auto;\n  color: #000;\n  background-color: #fff;\n  display: none;\n  position: absolute;\n  min-width: 160px;\n  margin: 0;\n  padding: 0;\n  z-index: 1; }\n\n.w3-check, .w3-radio {\n  width: 24px;\n  height: 24px;\n  position: relative;\n  top: 6px; }\n\n.w3-sidebar {\n  height: 100%;\n  width: 200px;\n  background-color: #fff;\n  position: fixed !important;\n  z-index: 1;\n  overflow: auto; }\n\n.w3-bar-block .w3-dropdown-hover, .w3-bar-block .w3-dropdown-click {\n  width: 100%; }\n\n.w3-bar-block .w3-dropdown-hover .w3-dropdown-content, .w3-bar-block .w3-dropdown-click .w3-dropdown-content {\n  min-width: 100%; }\n\n.w3-bar-block .w3-dropdown-hover .w3-button, .w3-bar-block .w3-dropdown-click .w3-button {\n  width: 100%;\n  text-align: left;\n  padding: 8px 16px; }\n\n.w3-main, #main {\n  transition: margin-left .4s; }\n\n.w3-modal {\n  z-index: 3;\n  display: none;\n  padding-top: 100px;\n  position: fixed;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  background-color: black;\n  background-color: rgba(0, 0, 0, 0.4); }\n\n.w3-modal-content {\n  margin: auto;\n  background-color: #fff;\n  position: relative;\n  padding: 0;\n  outline: 0;\n  width: 600px; }\n\n.w3-bar {\n  width: 100%;\n  overflow: hidden; }\n\n.w3-center .w3-bar {\n  display: inline-block;\n  width: auto; }\n\n.w3-bar .w3-bar-item {\n  padding: 8px 16px;\n  float: left;\n  width: auto;\n  border: none;\n  display: block;\n  outline: 0; }\n\n.w3-bar .w3-dropdown-hover, .w3-bar .w3-dropdown-click {\n  position: static;\n  float: left; }\n\n.w3-bar .w3-button {\n  white-space: normal; }\n\n.w3-bar-block .w3-bar-item {\n  width: 100%;\n  display: block;\n  padding: 8px 16px;\n  text-align: left;\n  border: none;\n  white-space: normal;\n  float: none;\n  outline: 0; }\n\n.w3-bar-block.w3-center .w3-bar-item {\n  text-align: center; }\n\n.w3-block {\n  display: block;\n  width: 100%; }\n\n.w3-responsive {\n  display: block;\n  overflow-x: auto; }\n\n.w3-container:after, .w3-container:before, .w3-panel:after, .w3-panel:before, .w3-row:after, .w3-row:before, .w3-row-padding:after, .w3-row-padding:before,\n.w3-cell-row:before, .w3-cell-row:after, .w3-clear:after, .w3-clear:before, .w3-bar:before, .w3-bar:after {\n  content: \"\";\n  display: table;\n  clear: both; }\n\n.w3-col, .w3-half, .w3-third, .w3-twothird, .w3-threequarter, .w3-quarter {\n  float: left;\n  width: 100%; }\n\n.w3-col.s1 {\n  width: 8.33333%; }\n\n.w3-col.s2 {\n  width: 16.66666%; }\n\n.w3-col.s3 {\n  width: 24.99999%; }\n\n.w3-col.s4 {\n  width: 33.33333%; }\n\n.w3-col.s5 {\n  width: 41.66666%; }\n\n.w3-col.s6 {\n  width: 49.99999%; }\n\n.w3-col.s7 {\n  width: 58.33333%; }\n\n.w3-col.s8 {\n  width: 66.66666%; }\n\n.w3-col.s9 {\n  width: 74.99999%; }\n\n.w3-col.s10 {\n  width: 83.33333%; }\n\n.w3-col.s11 {\n  width: 91.66666%; }\n\n.w3-col.s12 {\n  width: 99.99999%; }\n\n@media (min-width: 601px) {\n  .w3-col.m1 {\n    width: 8.33333%; }\n  .w3-col.m2 {\n    width: 16.66666%; }\n  .w3-col.m3, .w3-quarter {\n    width: 24.99999%; }\n  .w3-col.m4, .w3-third {\n    width: 33.33333%; }\n  .w3-col.m5 {\n    width: 41.66666%; }\n  .w3-col.m6, .w3-half {\n    width: 49.99999%; }\n  .w3-col.m7 {\n    width: 58.33333%; }\n  .w3-col.m8, .w3-twothird {\n    width: 66.66666%; }\n  .w3-col.m9, .w3-threequarter {\n    width: 74.99999%; }\n  .w3-col.m10 {\n    width: 83.33333%; }\n  .w3-col.m11 {\n    width: 91.66666%; }\n  .w3-col.m12 {\n    width: 99.99999%; } }\n\n@media (min-width: 993px) {\n  .w3-col.l1 {\n    width: 8.33333%; }\n  .w3-col.l2 {\n    width: 16.66666%; }\n  .w3-col.l3 {\n    width: 24.99999%; }\n  .w3-col.l4 {\n    width: 33.33333%; }\n  .w3-col.l5 {\n    width: 41.66666%; }\n  .w3-col.l6 {\n    width: 49.99999%; }\n  .w3-col.l7 {\n    width: 58.33333%; }\n  .w3-col.l8 {\n    width: 66.66666%; }\n  .w3-col.l9 {\n    width: 74.99999%; }\n  .w3-col.l10 {\n    width: 83.33333%; }\n  .w3-col.l11 {\n    width: 91.66666%; }\n  .w3-col.l12 {\n    width: 99.99999%; } }\n\n.w3-content {\n  max-width: 980px;\n  margin: auto; }\n\n.w3-rest {\n  overflow: hidden; }\n\n.w3-cell-row {\n  display: table;\n  width: 100%; }\n\n.w3-cell {\n  display: table-cell; }\n\n.w3-cell-top {\n  vertical-align: top; }\n\n.w3-cell-middle {\n  vertical-align: middle; }\n\n.w3-cell-bottom {\n  vertical-align: bottom; }\n\n.w3-hide {\n  display: none !important; }\n\n.w3-show-block, .w3-show {\n  display: block !important; }\n\n.w3-show-inline-block {\n  display: inline-block !important; }\n\n@media (max-width: 600px) {\n  .w3-modal-content {\n    margin: 0 10px;\n    width: auto !important; }\n  .w3-modal {\n    padding-top: 30px; }\n  .w3-dropdown-hover.w3-mobile .w3-dropdown-content, .w3-dropdown-click.w3-mobile .w3-dropdown-content {\n    position: relative; }\n  .w3-hide-small {\n    display: none !important; }\n  .w3-mobile {\n    display: block;\n    width: 100% !important; }\n  .w3-bar-item.w3-mobile, .w3-dropdown-hover.w3-mobile, .w3-dropdown-click.w3-mobile {\n    text-align: center; }\n  .w3-dropdown-hover.w3-mobile, .w3-dropdown-hover.w3-mobile .w3-btn, .w3-dropdown-hover.w3-mobile .w3-button, .w3-dropdown-click.w3-mobile, .w3-dropdown-click.w3-mobile .w3-btn, .w3-dropdown-click.w3-mobile .w3-button {\n    width: 100%; } }\n\n@media (max-width: 768px) {\n  .w3-modal-content {\n    width: 500px; }\n  .w3-modal {\n    padding-top: 50px; } }\n\n@media (min-width: 993px) {\n  .w3-modal-content {\n    width: 900px; }\n  .w3-hide-large {\n    display: none !important; }\n  .w3-sidebar.w3-collapse {\n    display: block !important; } }\n\n@media (max-width: 992px) and (min-width: 601px) {\n  .w3-hide-medium {\n    display: none !important; } }\n\n@media (max-width: 992px) {\n  .w3-sidebar.w3-collapse {\n    display: none; }\n  .w3-main {\n    margin-left: 0 !important;\n    margin-right: 0 !important; } }\n\n.w3-top, .w3-bottom {\n  position: fixed;\n  width: 100%;\n  z-index: 1; }\n\n.w3-top {\n  top: 0; }\n\n.w3-bottom {\n  bottom: 0; }\n\n.w3-overlay {\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  background-color: rgba(0, 0, 0, 0.5);\n  z-index: 2; }\n\n.w3-display-topleft {\n  position: absolute;\n  left: 0;\n  top: 0; }\n\n.w3-display-topright {\n  position: absolute;\n  right: 0;\n  top: 0; }\n\n.w3-display-bottomleft {\n  position: absolute;\n  left: 0;\n  bottom: 0; }\n\n.w3-display-bottomright {\n  position: absolute;\n  right: 0;\n  bottom: 0; }\n\n.w3-display-middle {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  -ms-transform: translate(-50%, -50%); }\n\n.w3-display-left {\n  position: absolute;\n  top: 50%;\n  left: 0%;\n  transform: translate(0%, -50%);\n  -ms-transform: translate(0%, -50%); }\n\n.w3-display-right {\n  position: absolute;\n  top: 50%;\n  right: 0%;\n  transform: translate(0%, -50%);\n  -ms-transform: translate(0%, -50%); }\n\n.w3-display-topmiddle {\n  position: absolute;\n  left: 50%;\n  top: 0;\n  transform: translate(-50%, 0%);\n  -ms-transform: translate(-50%, 0%); }\n\n.w3-display-bottommiddle {\n  position: absolute;\n  left: 50%;\n  bottom: 0;\n  transform: translate(-50%, 0%);\n  -ms-transform: translate(-50%, 0%); }\n\n.w3-display-container:hover .w3-display-hover {\n  display: block; }\n\n.w3-display-container:hover span.w3-display-hover {\n  display: inline-block; }\n\n.w3-display-hover {\n  display: none; }\n\n.w3-display-position {\n  position: absolute; }\n\n.w3-circle {\n  border-radius: 50%; }\n\n.w3-round-small {\n  border-radius: 2px; }\n\n.w3-round, .w3-round-medium {\n  border-radius: 4px; }\n\n.w3-round-large {\n  border-radius: 8px; }\n\n.w3-round-xlarge {\n  border-radius: 16px; }\n\n.w3-round-xxlarge {\n  border-radius: 32px; }\n\n.w3-row-padding, .w3-row-padding > .w3-half, .w3-row-padding > .w3-third, .w3-row-padding > .w3-twothird, .w3-row-padding > .w3-threequarter, .w3-row-padding > .w3-quarter, .w3-row-padding > .w3-col {\n  padding: 0 8px; }\n\n.w3-container, .w3-panel {\n  padding: 0.01em 16px; }\n\n.w3-panel {\n  margin-top: 16px;\n  margin-bottom: 16px; }\n\n.w3-code, .w3-codespan {\n  font-family: Consolas,\"courier new\";\n  font-size: 16px; }\n\n.w3-code {\n  width: auto;\n  background-color: #fff;\n  padding: 8px 12px;\n  border-left: 4px solid #4CAF50;\n  word-wrap: break-word; }\n\n.w3-codespan {\n  color: crimson;\n  background-color: #f1f1f1;\n  padding-left: 4px;\n  padding-right: 4px;\n  font-size: 110%; }\n\n.w3-card, .w3-card-2 {\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); }\n\n.w3-card-4, .w3-hover-shadow:hover {\n  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 4px 20px 0 rgba(0, 0, 0, 0.19); }\n\n.w3-spin {\n  animation: w3-spin 2s infinite linear; }\n\n@keyframes w3-spin {\n  0% {\n    transform: rotate(0deg); }\n  100% {\n    transform: rotate(359deg); } }\n\n.w3-animate-fading {\n  animation: fading 10s infinite; }\n\n@keyframes fading {\n  0% {\n    opacity: 0; }\n  50% {\n    opacity: 1; }\n  100% {\n    opacity: 0; } }\n\n.w3-animate-opacity {\n  animation: opac 0.8s; }\n\n@keyframes opac {\n  from {\n    opacity: 0; }\n  to {\n    opacity: 1; } }\n\n.w3-animate-top {\n  position: relative;\n  animation: animatetop 0.4s; }\n\n@keyframes animatetop {\n  from {\n    top: -300px;\n    opacity: 0; }\n  to {\n    top: 0;\n    opacity: 1; } }\n\n.w3-animate-left {\n  position: relative;\n  animation: animateleft 0.4s; }\n\n@keyframes animateleft {\n  from {\n    left: -300px;\n    opacity: 0; }\n  to {\n    left: 0;\n    opacity: 1; } }\n\n.w3-animate-right {\n  position: relative;\n  animation: animateright 0.4s; }\n\n@keyframes animateright {\n  from {\n    right: -300px;\n    opacity: 0; }\n  to {\n    right: 0;\n    opacity: 1; } }\n\n.w3-animate-bottom {\n  position: relative;\n  animation: animatebottom 0.4s; }\n\n@keyframes animatebottom {\n  from {\n    bottom: -300px;\n    opacity: 0; }\n  to {\n    bottom: 0;\n    opacity: 1; } }\n\n.w3-animate-zoom {\n  animation: animatezoom 0.6s; }\n\n@keyframes animatezoom {\n  from {\n    transform: scale(0); }\n  to {\n    transform: scale(1); } }\n\n.w3-animate-input {\n  transition: width 0.4s ease-in-out; }\n\n.w3-animate-input:focus {\n  width: 100% !important; }\n\n.w3-opacity, .w3-hover-opacity:hover {\n  opacity: 0.60; }\n\n.w3-opacity-off, .w3-hover-opacity-off:hover {\n  opacity: 1; }\n\n.w3-opacity-max {\n  opacity: 0.25; }\n\n.w3-opacity-min {\n  opacity: 0.75; }\n\n.w3-greyscale-max, .w3-grayscale-max, .w3-hover-greyscale:hover, .w3-hover-grayscale:hover {\n  filter: grayscale(100%); }\n\n.w3-greyscale, .w3-grayscale {\n  filter: grayscale(75%); }\n\n.w3-greyscale-min, .w3-grayscale-min {\n  filter: grayscale(50%); }\n\n.w3-sepia {\n  filter: sepia(75%); }\n\n.w3-sepia-max, .w3-hover-sepia:hover {\n  filter: sepia(100%); }\n\n.w3-sepia-min {\n  filter: sepia(50%); }\n\n.w3-tiny {\n  font-size: 10px !important; }\n\n.w3-small {\n  font-size: 12px !important; }\n\n.w3-medium {\n  font-size: 15px !important; }\n\n.w3-large {\n  font-size: 18px !important; }\n\n.w3-xlarge {\n  font-size: 24px !important; }\n\n.w3-xxlarge {\n  font-size: 36px !important; }\n\n.w3-xxxlarge {\n  font-size: 48px !important; }\n\n.w3-jumbo {\n  font-size: 64px !important; }\n\n.w3-left-align {\n  text-align: left !important; }\n\n.w3-right-align {\n  text-align: right !important; }\n\n.w3-justify {\n  text-align: justify !important; }\n\n.w3-center {\n  text-align: center !important; }\n\n.w3-border-0 {\n  border: 0 !important; }\n\n.w3-border {\n  border: 1px solid #ccc !important; }\n\n.w3-border-top {\n  border-top: 1px solid #ccc !important; }\n\n.w3-border-bottom {\n  border-bottom: 1px solid #ccc !important; }\n\n.w3-border-left {\n  border-left: 1px solid #ccc !important; }\n\n.w3-border-right {\n  border-right: 1px solid #ccc !important; }\n\n.w3-topbar {\n  border-top: 6px solid #ccc !important; }\n\n.w3-bottombar {\n  border-bottom: 6px solid #ccc !important; }\n\n.w3-leftbar {\n  border-left: 6px solid #ccc !important; }\n\n.w3-rightbar {\n  border-right: 6px solid #ccc !important; }\n\n.w3-section, .w3-code {\n  margin-top: 16px !important;\n  margin-bottom: 16px !important; }\n\n.w3-margin {\n  margin: 16px !important; }\n\n.w3-margin-top {\n  margin-top: 16px !important; }\n\n.w3-margin-bottom {\n  margin-bottom: 16px !important; }\n\n.w3-margin-left {\n  margin-left: 16px !important; }\n\n.w3-margin-right {\n  margin-right: 16px !important; }\n\n.w3-padding-small {\n  padding: 4px 8px !important; }\n\n.w3-padding {\n  padding: 8px 16px !important; }\n\n.w3-padding-large {\n  padding: 12px 24px !important; }\n\n.w3-padding-16 {\n  padding-top: 16px !important;\n  padding-bottom: 16px !important; }\n\n.w3-padding-24 {\n  padding-top: 24px !important;\n  padding-bottom: 24px !important; }\n\n.w3-padding-32 {\n  padding-top: 32px !important;\n  padding-bottom: 32px !important; }\n\n.w3-padding-48 {\n  padding-top: 48px !important;\n  padding-bottom: 48px !important; }\n\n.w3-padding-64 {\n  padding-top: 64px !important;\n  padding-bottom: 64px !important; }\n\n.w3-left {\n  float: left !important; }\n\n.w3-right {\n  float: right !important; }\n\n.w3-button:hover {\n  color: #000 !important;\n  background-color: #ccc !important; }\n\n.w3-transparent, .w3-hover-none:hover {\n  background-color: transparent !important; }\n\n.w3-hover-none:hover {\n  box-shadow: none !important; }\n\n/* Colors */\n.w3-amber, .w3-hover-amber:hover {\n  color: #000 !important;\n  background-color: #ffc107 !important; }\n\n.w3-aqua, .w3-hover-aqua:hover {\n  color: #000 !important;\n  background-color: #00ffff !important; }\n\n.w3-blue, .w3-hover-blue:hover {\n  color: #fff !important;\n  background-color: #2196F3 !important; }\n\n.w3-light-blue, .w3-hover-light-blue:hover {\n  color: #000 !important;\n  background-color: #87CEEB !important; }\n\n.w3-brown, .w3-hover-brown:hover {\n  color: #fff !important;\n  background-color: #795548 !important; }\n\n.w3-cyan, .w3-hover-cyan:hover {\n  color: #000 !important;\n  background-color: #00bcd4 !important; }\n\n.w3-blue-grey, .w3-hover-blue-grey:hover, .w3-blue-gray, .w3-hover-blue-gray:hover {\n  color: #fff !important;\n  background-color: #607d8b !important; }\n\n.w3-green, .w3-hover-green:hover {\n  color: #fff !important;\n  background-color: #4CAF50 !important; }\n\n.w3-light-green, .w3-hover-light-green:hover {\n  color: #000 !important;\n  background-color: #8bc34a !important; }\n\n.w3-indigo, .w3-hover-indigo:hover {\n  color: #fff !important;\n  background-color: #3f51b5 !important; }\n\n.w3-khaki, .w3-hover-khaki:hover {\n  color: #000 !important;\n  background-color: #f0e68c !important; }\n\n.w3-lime, .w3-hover-lime:hover {\n  color: #000 !important;\n  background-color: #cddc39 !important; }\n\n.w3-orange, .w3-hover-orange:hover {\n  color: #000 !important;\n  background-color: #ff9800 !important; }\n\n.w3-deep-orange, .w3-hover-deep-orange:hover {\n  color: #fff !important;\n  background-color: #ff5722 !important; }\n\n.w3-pink, .w3-hover-pink:hover {\n  color: #fff !important;\n  background-color: #e91e63 !important; }\n\n.w3-purple, .w3-hover-purple:hover {\n  color: #fff !important;\n  background-color: #9c27b0 !important; }\n\n.w3-deep-purple, .w3-hover-deep-purple:hover {\n  color: #fff !important;\n  background-color: #673ab7 !important; }\n\n.w3-red, .w3-hover-red:hover {\n  color: #fff !important;\n  background-color: #f44336 !important; }\n\n.w3-sand, .w3-hover-sand:hover {\n  color: #000 !important;\n  background-color: #fdf5e6 !important; }\n\n.w3-teal, .w3-hover-teal:hover {\n  color: #fff !important;\n  background-color: #009688 !important; }\n\n.w3-yellow, .w3-hover-yellow:hover {\n  color: #000 !important;\n  background-color: #ffeb3b !important; }\n\n.w3-white, .w3-hover-white:hover {\n  color: #000 !important;\n  background-color: #fff !important; }\n\n.w3-black, .w3-hover-black:hover {\n  color: #fff !important;\n  background-color: #000 !important; }\n\n.w3-grey, .w3-hover-grey:hover, .w3-gray, .w3-hover-gray:hover {\n  color: #000 !important;\n  background-color: #9e9e9e !important; }\n\n.w3-light-grey, .w3-hover-light-grey:hover, .w3-light-gray, .w3-hover-light-gray:hover {\n  color: #000 !important;\n  background-color: #f1f1f1 !important; }\n\n.w3-dark-grey, .w3-hover-dark-grey:hover, .w3-dark-gray, .w3-hover-dark-gray:hover {\n  color: #fff !important;\n  background-color: #616161 !important; }\n\n.w3-pale-red, .w3-hover-pale-red:hover {\n  color: #000 !important;\n  background-color: #ffdddd !important; }\n\n.w3-pale-green, .w3-hover-pale-green:hover {\n  color: #000 !important;\n  background-color: #ddffdd !important; }\n\n.w3-pale-yellow, .w3-hover-pale-yellow:hover {\n  color: #000 !important;\n  background-color: #ffffcc !important; }\n\n.w3-pale-blue, .w3-hover-pale-blue:hover {\n  color: #000 !important;\n  background-color: #ddffff !important; }\n\n.w3-text-amber, .w3-hover-text-amber:hover {\n  color: #ffc107 !important; }\n\n.w3-text-aqua, .w3-hover-text-aqua:hover {\n  color: #00ffff !important; }\n\n.w3-text-blue, .w3-hover-text-blue:hover {\n  color: #2196F3 !important; }\n\n.w3-text-light-blue, .w3-hover-text-light-blue:hover {\n  color: #87CEEB !important; }\n\n.w3-text-brown, .w3-hover-text-brown:hover {\n  color: #795548 !important; }\n\n.w3-text-cyan, .w3-hover-text-cyan:hover {\n  color: #00bcd4 !important; }\n\n.w3-text-blue-grey, .w3-hover-text-blue-grey:hover, .w3-text-blue-gray, .w3-hover-text-blue-gray:hover {\n  color: #607d8b !important; }\n\n.w3-text-green, .w3-hover-text-green:hover {\n  color: #4CAF50 !important; }\n\n.w3-text-light-green, .w3-hover-text-light-green:hover {\n  color: #8bc34a !important; }\n\n.w3-text-indigo, .w3-hover-text-indigo:hover {\n  color: #3f51b5 !important; }\n\n.w3-text-khaki, .w3-hover-text-khaki:hover {\n  color: #b4aa50 !important; }\n\n.w3-text-lime, .w3-hover-text-lime:hover {\n  color: #cddc39 !important; }\n\n.w3-text-orange, .w3-hover-text-orange:hover {\n  color: #ff9800 !important; }\n\n.w3-text-deep-orange, .w3-hover-text-deep-orange:hover {\n  color: #ff5722 !important; }\n\n.w3-text-pink, .w3-hover-text-pink:hover {\n  color: #e91e63 !important; }\n\n.w3-text-purple, .w3-hover-text-purple:hover {\n  color: #9c27b0 !important; }\n\n.w3-text-deep-purple, .w3-hover-text-deep-purple:hover {\n  color: #673ab7 !important; }\n\n.w3-text-red, .w3-hover-text-red:hover {\n  color: #f44336 !important; }\n\n.w3-text-sand, .w3-hover-text-sand:hover {\n  color: #fdf5e6 !important; }\n\n.w3-text-teal, .w3-hover-text-teal:hover {\n  color: #009688 !important; }\n\n.w3-text-yellow, .w3-hover-text-yellow:hover {\n  color: #d2be0e !important; }\n\n.w3-text-white, .w3-hover-text-white:hover {\n  color: #fff !important; }\n\n.w3-text-black, .w3-hover-text-black:hover {\n  color: #000 !important; }\n\n.w3-text-grey, .w3-hover-text-grey:hover, .w3-text-gray, .w3-hover-text-gray:hover {\n  color: #757575 !important; }\n\n.w3-text-light-grey, .w3-hover-text-light-grey:hover, .w3-text-light-gray, .w3-hover-text-light-gray:hover {\n  color: #f1f1f1 !important; }\n\n.w3-text-dark-grey, .w3-hover-text-dark-grey:hover, .w3-text-dark-gray, .w3-hover-text-dark-gray:hover {\n  color: #3a3a3a !important; }\n\n.w3-border-amber, .w3-hover-border-amber:hover {\n  border-color: #ffc107 !important; }\n\n.w3-border-aqua, .w3-hover-border-aqua:hover {\n  border-color: #00ffff !important; }\n\n.w3-border-blue, .w3-hover-border-blue:hover {\n  border-color: #2196F3 !important; }\n\n.w3-border-light-blue, .w3-hover-border-light-blue:hover {\n  border-color: #87CEEB !important; }\n\n.w3-border-brown, .w3-hover-border-brown:hover {\n  border-color: #795548 !important; }\n\n.w3-border-cyan, .w3-hover-border-cyan:hover {\n  border-color: #00bcd4 !important; }\n\n.w3-border-blue-grey, .w3-hover-border-blue-grey:hover, .w3-border-blue-gray, .w3-hover-border-blue-gray:hover {\n  border-color: #607d8b !important; }\n\n.w3-border-green, .w3-hover-border-green:hover {\n  border-color: #4CAF50 !important; }\n\n.w3-border-light-green, .w3-hover-border-light-green:hover {\n  border-color: #8bc34a !important; }\n\n.w3-border-indigo, .w3-hover-border-indigo:hover {\n  border-color: #3f51b5 !important; }\n\n.w3-border-khaki, .w3-hover-border-khaki:hover {\n  border-color: #f0e68c !important; }\n\n.w3-border-lime, .w3-hover-border-lime:hover {\n  border-color: #cddc39 !important; }\n\n.w3-border-orange, .w3-hover-border-orange:hover {\n  border-color: #ff9800 !important; }\n\n.w3-border-deep-orange, .w3-hover-border-deep-orange:hover {\n  border-color: #ff5722 !important; }\n\n.w3-border-pink, .w3-hover-border-pink:hover {\n  border-color: #e91e63 !important; }\n\n.w3-border-purple, .w3-hover-border-purple:hover {\n  border-color: #9c27b0 !important; }\n\n.w3-border-deep-purple, .w3-hover-border-deep-purple:hover {\n  border-color: #673ab7 !important; }\n\n.w3-border-red, .w3-hover-border-red:hover {\n  border-color: #f44336 !important; }\n\n.w3-border-sand, .w3-hover-border-sand:hover {\n  border-color: #fdf5e6 !important; }\n\n.w3-border-teal, .w3-hover-border-teal:hover {\n  border-color: #009688 !important; }\n\n.w3-border-yellow, .w3-hover-border-yellow:hover {\n  border-color: #ffeb3b !important; }\n\n.w3-border-white, .w3-hover-border-white:hover {\n  border-color: #fff !important; }\n\n.w3-border-black, .w3-hover-border-black:hover {\n  border-color: #000 !important; }\n\n.w3-border-grey, .w3-hover-border-grey:hover, .w3-border-gray, .w3-hover-border-gray:hover {\n  border-color: #9e9e9e !important; }\n\n.w3-border-light-grey, .w3-hover-border-light-grey:hover, .w3-border-light-gray, .w3-hover-border-light-gray:hover {\n  border-color: #f1f1f1 !important; }\n\n.w3-border-dark-grey, .w3-hover-border-dark-grey:hover, .w3-border-dark-gray, .w3-hover-border-dark-gray:hover {\n  border-color: #616161 !important; }\n\n.w3-border-pale-red, .w3-hover-border-pale-red:hover {\n  border-color: #ffe7e7 !important; }\n\n.w3-border-pale-green, .w3-hover-border-pale-green:hover {\n  border-color: #e7ffe7 !important; }\n\n.w3-border-pale-yellow, .w3-hover-border-pale-yellow:hover {\n  border-color: #ffffcc !important; }\n\n.w3-border-pale-blue, .w3-hover-border-pale-blue:hover {\n  border-color: #e7ffff !important; }\n", ""]);
 
 // exports
 
@@ -76635,14 +76635,28 @@ var App = function (_Component) {
 
 		_this.state = {
 			username: null,
-			password: null
+			password: null,
+			web3: null,
+			accounts: null,
+			contract: null
 		};
 		return _this;
 	}
 
 	_createClass(App, [{
 		key: 'componentWillMount',
-		value: function componentWillMount() {}
+		value: function componentWillMount() {
+			var _this2 = this;
+
+			_getWeb2.default.then(function (results) {
+				_this2.setState({
+					web3: results.web3
+				});
+				_this2.instantiateContract();
+			}).catch(function () {
+				console.log('Error finding web3.');
+			});
+		}
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {}
@@ -76658,30 +76672,47 @@ var App = function (_Component) {
 			});
 		}
 	}, {
+		key: 'makeCard',
+		value: function makeCard(heading, content) {
+			return _react2.default.createElement(
+				'div',
+				{ className: 'w3-card-4 w3-margin-top',
+					style: { margin: "auto", width: "50%" } },
+				_react2.default.createElement(
+					'div',
+					{ className: 'w3-container w3-green' },
+					_react2.default.createElement(
+						'h2',
+						null,
+						heading
+					)
+				),
+				content
+			);
+		}
+	}, {
 		key: 'render',
 		value: function render() {
 			var content = null;
 			if (this.state.username != null && this.state.password != null) {
+				var addTournamentCard = this.makeCard("Add new Tournament", _react2.default.createElement(_AddTournament2.default, {
+					username: this.state.username,
+					password: this.state.password }));
+				var addTeamCard = this.makeCard("Add new Team", _react2.default.createElement(_AddTeam2.default, {
+					username: this.state.username,
+					password: this.state.password }));
+				var addMatchCard = this.makeCard("Add new Match", _react2.default.createElement(_AddMatch2.default, {
+					username: this.state.username,
+					password: this.state.password }));
 				content = _react2.default.createElement(
 					'div',
 					null,
-					_react2.default.createElement(
-						'p',
-						null,
-						' Admin Console:'
-					),
-					_react2.default.createElement(_AddTournament2.default, {
-						username: this.state.username,
-						password: this.state.password }),
-					_react2.default.createElement(_AddTeam2.default, {
-						username: this.state.username,
-						password: this.state.password }),
-					_react2.default.createElement(_AddMatch2.default, {
-						username: this.state.username,
-						password: this.state.password })
+					addTournamentCard,
+					addTeamCard,
+					addMatchCard
 				);
 			} else {
-				content = _react2.default.createElement(_AddCredentials2.default, { onLogin: this.onLogin.bind(this) });
+				content = this.makeCard("Login", _react2.default.createElement(_AddCredentials2.default, { onLogin: this.onLogin.bind(this) }));
 			}
 			return _react2.default.createElement(
 				'div',
@@ -76766,12 +76797,7 @@ var AddCredentials = function (_Component) {
 
             return _react2.default.createElement(
                 'div',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    'Login:'
-                ),
+                { className: 'w3-container' },
                 _react2.default.createElement(
                     'form',
                     { onSubmit: this.handleLogin },
@@ -76779,16 +76805,16 @@ var AddCredentials = function (_Component) {
                         'label',
                         null,
                         'Username:',
-                        _react2.default.createElement('input', { value: 'admin', type: 'text', ref: function ref(input) {
+                        _react2.default.createElement('input', { className: 'w3-input', value: 'admin', type: 'text', ref: function ref(input) {
                                 return _this2.usernameInput = input;
                             } }),
                         _react2.default.createElement('br', null),
                         'Password:',
-                        _react2.default.createElement('input', { value: 'p4553o7d', type: 'text', ref: function ref(input) {
+                        _react2.default.createElement('input', { className: 'w3-input', value: 'p4553o7d', type: 'text', ref: function ref(input) {
                                 return _this2.passwordInput = input;
                             } }),
                         _react2.default.createElement('br', null),
-                        _react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+                        _react2.default.createElement('input', { className: 'w3-btn w3-blue w3-margin-top w3-margin-bottom', type: 'submit', value: 'Submit' })
                     )
                 )
             );
@@ -76808,7 +76834,7 @@ exports.default = AddCredentials;
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+				value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -76842,360 +76868,363 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var AddMatch = function (_Component) {
-    _inherits(AddMatch, _Component);
+				_inherits(AddMatch, _Component);
 
-    function AddMatch(props) {
-        _classCallCheck(this, AddMatch);
+				function AddMatch(props) {
+								_classCallCheck(this, AddMatch);
 
-        var _this = _possibleConstructorReturn(this, (AddMatch.__proto__ || Object.getPrototypeOf(AddMatch)).call(this, props));
+								var _this = _possibleConstructorReturn(this, (AddMatch.__proto__ || Object.getPrototypeOf(AddMatch)).call(this, props));
 
-        _this.handleCreateMatch = _this.handleCreateMatch.bind(_this);
-        _this.handleTournamentSelection = _this.handleTournamentSelection.bind(_this);
-        _this.handleTeamASelection = _this.handleTeamASelection.bind(_this);
-        _this.handleTeamBSelection = _this.handleTeamBSelection.bind(_this);
-        _this.state = {
-            web3: null,
-            accounts: null,
-            contract: null,
-            tournament: null,
-            teams: null,
-            tournaments: null,
-            matches: null,
-            team_a_id: null,
-            team_b_id: null
-        };
-        return _this;
-    }
+								_this.handleCreateMatch = _this.handleCreateMatch.bind(_this);
+								_this.handleTournamentSelection = _this.handleTournamentSelection.bind(_this);
+								_this.handleTeamASelection = _this.handleTeamASelection.bind(_this);
+								_this.handleTeamBSelection = _this.handleTeamBSelection.bind(_this);
+								_this.state = {
+												web3: null,
+												accounts: null,
+												contract: null,
+												tournament: null,
+												teams: null,
+												tournaments: null,
+												matches: null,
+												team_a_id: null,
+												team_b_id: null
+								};
+								return _this;
+				}
 
-    _createClass(AddMatch, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            var _this2 = this;
+				_createClass(AddMatch, [{
+								key: 'componentWillMount',
+								value: function componentWillMount() {
+												var _this2 = this;
 
-            _getWeb2.default.then(function (results) {
-                _this2.setState({
-                    web3: results.web3
-                });
-                _this2.instantiateContract();
-            }).catch(function () {
-                console.log('Error finding web3.');
-            });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.getTournaments();
-            this.getTeams();
-        }
-    }, {
-        key: 'instantiateContract',
-        value: function instantiateContract() {
-            var _this3 = this;
+												_getWeb2.default.then(function (results) {
+																_this2.setState({
+																				web3: results.web3
+																});
+																_this2.instantiateContract();
+												}).catch(function () {
+																console.log('Error finding web3.');
+												});
+								}
+				}, {
+								key: 'componentDidMount',
+								value: function componentDidMount() {
+												this.getTournaments();
+												this.getTeams();
+								}
+				}, {
+								key: 'instantiateContract',
+								value: function instantiateContract() {
+												var _this3 = this;
 
-            var contract = __webpack_require__(324);
+												var contract = __webpack_require__(324);
 
-            var sportsPool = contract(_SportsPool2.default);
-            sportsPool.setProvider(this.state.web3.currentProvider);
+												var sportsPool = contract(_SportsPool2.default);
+												sportsPool.setProvider(this.state.web3.currentProvider);
 
-            var sportsPoolInstance;
+												var sportsPoolInstance;
 
-            this.state.web3.eth.getAccounts(function (error, accounts) {
-                _this3.setState({
-                    accounts: accounts
-                });
-                sportsPool.deployed().then(function (instance) {
-                    sportsPoolInstance = instance;
-                    _this3.setState({
-                        contract: sportsPoolInstance
-                    });
-                });
-            });
-        }
-    }, {
-        key: 'handleCreateMatch',
-        value: function handleCreateMatch(event) {
-            var _this4 = this;
+												this.state.web3.eth.getAccounts(function (error, accounts) {
+																_this3.setState({
+																				accounts: accounts
+																});
+																sportsPool.deployed().then(function (instance) {
+																				sportsPoolInstance = instance;
+																				_this3.setState({
+																								contract: sportsPoolInstance
+																				});
+																});
+												});
+								}
+				}, {
+								key: 'handleCreateMatch',
+								value: function handleCreateMatch(event) {
+												var _this4 = this;
 
-            console.log(parseInt(this.state.tournament) + "," + parseInt(this.state.team_a_id) + "," + parseInt(this.state.team_b_id) + "," + parseInt(this.matchCostInput.value) + "," + parseInt(this.matchDevFeeInput.value) + "," + parseInt(this.matchTimeInput.value));
-            this.state.contract.addMatch(parseInt(this.state.tournament), parseInt(this.state.team_a_id), parseInt(this.state.team_b_id), parseInt(this.matchCostInput.value), parseInt(this.matchDevFeeInput.value), parseInt(this.matchTimeInput.value), {
-                from: this.state.accounts[0]
-            }).then(function (result) {
-                console.log("Result:" + JSON.stringify(result));
-                for (var i = 0; result.logs.length; i++) {
-                    var log = result.logs[i];
-                    if (log.event === "MatchAdded") {
-                        _this4.addMatchToDB(log.args.tournamentId, log.args.matchId);
-                        return;
-                    }
-                }
-                alert("Something went wrong!");
-            }).catch(function (ex) {
-                console.log("Error:\n" + ex);
-                alert("Error:" + ex);
-            });
-            event.preventDefault();
-        }
-    }, {
-        key: 'addMatchToDB',
-        value: function addMatchToDB(tournamentId, matchId) {
-            var _this5 = this;
+												console.log(parseInt(this.state.tournament) + "," + parseInt(this.state.team_a_id) + "," + parseInt(this.state.team_b_id) + "," + parseInt(this.matchCostInput.value) + "," + parseInt(this.matchDevFeeInput.value) + "," + parseInt(this.matchTimeInput.value));
+												this.state.contract.addMatch(parseInt(this.state.tournament), parseInt(this.state.team_a_id), parseInt(this.state.team_b_id), parseInt(this.matchCostInput.value), parseInt(this.matchDevFeeInput.value), parseInt(this.matchTimeInput.value), {
+																from: this.state.accounts[0]
+												}).then(function (result) {
+																console.log("Result:" + JSON.stringify(result));
+																for (var i = 0; result.logs.length; i++) {
+																				var log = result.logs[i];
+																				if (log.event === "MatchAdded") {
+																								_this4.addMatchToDB(log.args.tournamentId, log.args.matchId);
+																								return;
+																				}
+																}
+																alert("Something went wrong!");
+												}).catch(function (ex) {
+																console.log("Error:\n" + ex);
+																alert("Error:" + ex);
+												});
+												event.preventDefault();
+								}
+				}, {
+								key: 'addMatchToDB',
+								value: function addMatchToDB(tournamentId, matchId) {
+												var _this5 = this;
 
-            fetch('/match', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username: this.props.username,
-                    password: this.props.password,
-                    match_number: matchId,
-                    tournament_id: tournamentId,
-                    date_time_stamp: this.matchTimeInput.value,
-                    bet_cutoff_minutes: 60,
-                    state: 0,
-                    team_a_id: this.state.team_a_id,
-                    team_b_id: this.state.team_b_id
-                })
-            }).then(function (resp) {
-                console.log(resp);
-                _this5.matchCostInput.value = "";
-                _this5.matchDevFeeInput.value = "";
-                _this5.matchTimeInput.value = "";
-                _this5.getMatches(tournamentId);
-            }).catch(function (ex) {
-                alert("Error:" + ex);
-            });
-        }
-    }, {
-        key: 'getTournaments',
-        value: function getTournaments() {
-            var _this6 = this;
+												fetch('/match', {
+																method: 'POST',
+																headers: {
+																				'Accept': 'application/json',
+																				'Content-Type': 'application/json'
+																},
+																body: JSON.stringify({
+																				username: this.props.username,
+																				password: this.props.password,
+																				match_number: matchId,
+																				tournament_id: tournamentId,
+																				date_time_stamp: this.matchTimeInput.value,
+																				bet_cutoff_minutes: 60,
+																				state: 0,
+																				team_a_id: this.state.team_a_id,
+																				team_b_id: this.state.team_b_id
+																})
+												}).then(function (resp) {
+																console.log(resp);
+																_this5.matchCostInput.value = "";
+																_this5.matchDevFeeInput.value = "";
+																_this5.matchTimeInput.value = "";
+																_this5.getMatches(tournamentId);
+												}).catch(function (ex) {
+																alert("Error:" + ex);
+												});
+								}
+				}, {
+								key: 'getTournaments',
+								value: function getTournaments() {
+												var _this6 = this;
 
-            this.setState(function (prevState, props) {
-                return {
-                    tournaments: null
-                };
-            });
-            fetch('/tournaments').then(function (response) {
-                if (response.status >= 400) {
-                    throw new Error("Bad response from server");
-                }
-                return response.json();
-            }).then(function (results) {
-                _this6.setState(function (prevState, props) {
-                    return {
-                        tournaments: results
-                    };
-                });
-                if (results != null && results[0] != null) {
-                    _this6.getMatches(results[0]._id);
-                }
-            });
-        }
-    }, {
-        key: 'getMatches',
-        value: function getMatches(tournamentId) {
-            var _this7 = this;
+												this.setState(function (prevState, props) {
+																return {
+																				tournaments: null
+																};
+												});
+												fetch('/tournaments').then(function (response) {
+																if (response.status >= 400) {
+																				throw new Error("Bad response from server");
+																}
+																return response.json();
+												}).then(function (results) {
+																_this6.setState(function (prevState, props) {
+																				return {
+																								tournaments: results
+																				};
+																});
+																if (results != null && results[0] != null) {
+																				_this6.getMatches(results[0]._id);
+																}
+												});
+								}
+				}, {
+								key: 'getMatches',
+								value: function getMatches(tournamentId) {
+												var _this7 = this;
 
-            this.setState(function (prevState, props) {
-                return {
-                    matches: null
-                };
-            });
-            fetch('/matches?tournament_id=' + tournamentId).then(function (response) {
-                if (response.status >= 400) {
-                    throw new Error("Bad response from server");
-                }
-                return response.json();
-            }).then(function (results) {
-                _this7.setState(function (prevState, props) {
-                    return {
-                        matches: results
-                    };
-                });
-            });
-        }
-    }, {
-        key: 'getTeams',
-        value: function getTeams() {
-            var _this8 = this;
+												this.setState(function (prevState, props) {
+																return {
+																				matches: null
+																};
+												});
+												fetch('/matches?tournament_id=' + tournamentId).then(function (response) {
+																if (response.status >= 400) {
+																				throw new Error("Bad response from server");
+																}
+																return response.json();
+												}).then(function (results) {
+																_this7.setState(function (prevState, props) {
+																				return {
+																								matches: results
+																				};
+																});
+												});
+								}
+				}, {
+								key: 'getTeams',
+								value: function getTeams() {
+												var _this8 = this;
 
-            this.setState(function (prevState, props) {
-                return {
-                    teams: null
-                };
-            });
-            fetch('/teams').then(function (response) {
-                if (response.status >= 400) {
-                    throw new Error("Bad response from server");
-                }
-                return response.json();
-            }).then(function (results) {
-                _this8.setState(function (prevState, props) {
-                    return {
-                        teams: results
-                    };
-                });
-            });
-        }
-    }, {
-        key: 'handleTournamentSelection',
-        value: function handleTournamentSelection(event) {
-            //alert(event.target.value);
-            this.setState({ tournament: event.target.value });
-            this.getMatches(event.target.value);
-        }
-    }, {
-        key: 'handleTeamASelection',
-        value: function handleTeamASelection(event) {
-            this.setState({ team_a_id: event.target.value });
-        }
-    }, {
-        key: 'handleTeamBSelection',
-        value: function handleTeamBSelection(event) {
-            this.setState({ team_b_id: event.target.value });
-        }
-    }, {
-        key: 'createTournamentOptions',
-        value: function createTournamentOptions() {
-            return this.state.tournaments.map(function (tournament, i) {
-                return _react2.default.createElement(
-                    'option',
-                    {
-                        key: tournament._id,
-                        value: tournament._id },
-                    tournament.name
-                );
-            });
-        }
-    }, {
-        key: 'createMatchesList',
-        value: function createMatchesList() {
-            return this.state.matches.map(function (match, i) {
-                return _react2.default.createElement(
-                    'text',
-                    { key: match.match_number },
-                    match.match_number,
-                    ','
-                );
-            });
-        }
-    }, {
-        key: 'createTeamOptions',
-        value: function createTeamOptions() {
-            return this.state.teams.map(function (team, i) {
-                return _react2.default.createElement(
-                    'option',
-                    {
-                        key: team._id,
-                        value: team._id },
-                    team.name
-                );
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this9 = this;
+												this.setState(function (prevState, props) {
+																return {
+																				teams: null
+																};
+												});
+												fetch('/teams').then(function (response) {
+																if (response.status >= 400) {
+																				throw new Error("Bad response from server");
+																}
+																return response.json();
+												}).then(function (results) {
+																_this8.setState(function (prevState, props) {
+																				return {
+																								teams: results
+																				};
+																});
+												});
+								}
+				}, {
+								key: 'handleTournamentSelection',
+								value: function handleTournamentSelection(event) {
+												//alert(event.target.value);
+												this.setState({ tournament: event.target.value });
+												this.getMatches(event.target.value);
+								}
+				}, {
+								key: 'handleTeamASelection',
+								value: function handleTeamASelection(event) {
+												this.setState({ team_a_id: event.target.value });
+								}
+				}, {
+								key: 'handleTeamBSelection',
+								value: function handleTeamBSelection(event) {
+												this.setState({ team_b_id: event.target.value });
+								}
+				}, {
+								key: 'createTournamentOptions',
+								value: function createTournamentOptions() {
+												return this.state.tournaments.map(function (tournament, i) {
+																return _react2.default.createElement(
+																				'option',
+																				{
+																								key: tournament._id,
+																								value: tournament._id },
+																				tournament.name
+																);
+												});
+								}
+				}, {
+								key: 'createMatchesList',
+								value: function createMatchesList() {
+												return this.state.matches.map(function (match, i) {
+																return _react2.default.createElement(
+																				'text',
+																				{ key: match.match_number },
+																				match.match_number,
+																				','
+																);
+												});
+								}
+				}, {
+								key: 'createTeamOptions',
+								value: function createTeamOptions() {
+												return this.state.teams.map(function (team, i) {
+																return _react2.default.createElement(
+																				'option',
+																				{
+																								key: team._id,
+																								value: team._id },
+																				team.name
+																);
+												});
+								}
+				}, {
+								key: 'render',
+								value: function render() {
+												var _this9 = this;
 
-            var form = null;
-            if (this.state.tournaments != null) {
-                var tournamentOptions = null;
-                tournamentOptions = this.createTournamentOptions();
-                var matchesString = null;
-                if (this.state.matches != null) {
-                    var matchesList = this.createMatchesList();
-                    matchesString = _react2.default.createElement(
-                        'p',
-                        null,
-                        'Existing match ids:',
-                        matchesList
-                    );
-                } else {
-                    matchesString = _react2.default.createElement(
-                        'p',
-                        null,
-                        'Loading...'
-                    );
-                }
-                var teamOptions = null;
-                if (this.state.teams != null) {
-                    teamOptions = this.createTeamOptions();
-                } else {
-                    teamOptions = _react2.default.createElement(
-                        'p',
-                        null,
-                        'Loading...'
-                    );
-                }
-                form = _react2.default.createElement(
-                    'form',
-                    { onSubmit: this.handleCreateMatch },
-                    _react2.default.createElement(
-                        'label',
-                        null,
-                        'Select Tournament:',
-                        _react2.default.createElement(
-                            'select',
-                            { onChange: this.handleTournamentSelection },
-                            tournamentOptions
-                        ),
-                        matchesString,
-                        'Select Team A:',
-                        _react2.default.createElement(
-                            'select',
-                            { onChange: this.handleTeamASelection },
-                            teamOptions
-                        ),
-                        _react2.default.createElement('br', null),
-                        'Select Team B:',
-                        _react2.default.createElement(
-                            'select',
-                            { onChange: this.handleTeamBSelection },
-                            teamOptions
-                        ),
-                        _react2.default.createElement('br', null),
-                        'Cost:',
-                        _react2.default.createElement('input', { type: 'text', ref: function ref(input) {
-                                return _this9.matchCostInput = input;
-                            } }),
-                        _react2.default.createElement('br', null),
-                        'Dev Fee (%):',
-                        _react2.default.createElement('input', { type: 'text', ref: function ref(input) {
-                                return _this9.matchDevFeeInput = input;
-                            } }),
-                        _react2.default.createElement('br', null),
-                        'Time Stamp:',
-                        _react2.default.createElement('input', { value: '1530000000', type: 'text', ref: function ref(input) {
-                                return _this9.matchTimeInput = input;
-                            } }),
-                        _react2.default.createElement('br', null),
-                        _react2.default.createElement('input', { type: 'submit', value: 'Submit' })
-                    )
-                );
-            } else {
-                form = _react2.default.createElement(
-                    'p',
-                    null,
-                    'Loading...'
-                );
-            }
+												var form = null;
+												if (this.state.tournaments != null) {
+																var tournamentOptions = null;
+																tournamentOptions = this.createTournamentOptions();
+																var matchesString = null;
+																if (this.state.matches != null) {
+																				var matchesList = this.createMatchesList();
+																				matchesString = _react2.default.createElement(
+																								'p',
+																								null,
+																								'Existing match ids:',
+																								matchesList
+																				);
+																} else {
+																				matchesString = _react2.default.createElement(
+																								'p',
+																								null,
+																								'Loading...'
+																				);
+																}
+																var teamOptions = null;
+																if (this.state.teams != null) {
+																				teamOptions = this.createTeamOptions();
+																} else {
+																				teamOptions = _react2.default.createElement(
+																								'p',
+																								null,
+																								'Loading...'
+																				);
+																}
+																form = _react2.default.createElement(
+																				'form',
+																				{ onSubmit: this.handleCreateMatch },
+																				_react2.default.createElement(
+																								'label',
+																								null,
+																								'Select Tournament:',
+																								_react2.default.createElement(
+																												'select',
+																												{ onChange: this.handleTournamentSelection },
+																												tournamentOptions
+																								),
+																								matchesString,
+																								'Select Team A:',
+																								_react2.default.createElement(
+																												'select',
+																												{ onChange: this.handleTeamASelection },
+																												teamOptions
+																								),
+																								_react2.default.createElement('br', null),
+																								'Select Team B:',
+																								_react2.default.createElement(
+																												'select',
+																												{ onChange: this.handleTeamBSelection },
+																												teamOptions
+																								),
+																								_react2.default.createElement('br', null),
+																								'Cost:',
+																								_react2.default.createElement('input', { className: 'w3-input',
+																												type: 'text',
+																												ref: function ref(input) {
+																																return _this9.matchCostInput = input;
+																												} }),
+																								_react2.default.createElement('br', null),
+																								'Dev Fee (%):',
+																								_react2.default.createElement('input', { className: 'w3-input',
+																												type: 'text',
+																												ref: function ref(input) {
+																																return _this9.matchDevFeeInput = input;
+																												} }),
+																								_react2.default.createElement('br', null),
+																								'Time Stamp:',
+																								_react2.default.createElement('input', { className: 'w3-input',
+																												value: '1530000000',
+																												type: 'text',
+																												ref: function ref(input) {
+																																return _this9.matchTimeInput = input;
+																												} }),
+																								_react2.default.createElement('br', null),
+																								_react2.default.createElement('input', { className: 'w3-btn w3-blue w3-margin-top w3-margin-bottom',
+																												type: 'submit', value: 'Submit' })
+																				)
+																);
+												} else {
+																form = _react2.default.createElement(
+																				'p',
+																				null,
+																				'Loading...'
+																);
+												}
 
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    ' Add new Match '
-                ),
-                form
-            );
-        }
-    }]);
+												return _react2.default.createElement(
+																'div',
+																{ className: 'w3-container' },
+																form
+												);
+								}
+				}]);
 
-    return AddMatch;
+				return AddMatch;
 }(_react.Component);
 
 exports.default = AddMatch;
@@ -77341,18 +77370,13 @@ var AddTeam = function (_Component) {
             teams = teams == null ? "LOADING..." : teams;
             return _react2.default.createElement(
                 'div',
-                null,
+                { className: 'w3-container' },
                 _react2.default.createElement(
-                    'p',
+                    'h2',
                     null,
                     'Existing Teams'
                 ),
                 teams,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    'Add new Team'
-                ),
                 _react2.default.createElement(
                     'form',
                     { onSubmit: this.handleCreateTeam },
@@ -77360,21 +77384,28 @@ var AddTeam = function (_Component) {
                         'label',
                         null,
                         'ID:',
-                        _react2.default.createElement('input', { type: 'text', ref: function ref(input) {
+                        _react2.default.createElement('input', { className: 'w3-input',
+                            type: 'text',
+                            ref: function ref(input) {
                                 return _this4.teamIDInput = input;
                             } }),
                         _react2.default.createElement('br', null),
                         'Name:',
-                        _react2.default.createElement('input', { type: 'text', ref: function ref(input) {
+                        _react2.default.createElement('input', { className: 'w3-input',
+                            type: 'text',
+                            ref: function ref(input) {
                                 return _this4.teamNameInput = input;
                             } }),
                         _react2.default.createElement('br', null),
                         'Description:',
-                        _react2.default.createElement('input', { type: 'text', ref: function ref(input) {
+                        _react2.default.createElement('input', { className: 'w3-input',
+                            type: 'text',
+                            ref: function ref(input) {
                                 return _this4.teamCountryInput = input;
                             } }),
                         _react2.default.createElement('br', null),
-                        _react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+                        _react2.default.createElement('input', { className: 'w3-btn w3-blue w3-margin-top w3-margin-bottom',
+                            type: 'submit', value: 'Submit' })
                     )
                 )
             );
@@ -77600,18 +77631,13 @@ var AddTournament = function (_Component) {
             tournaments = tournaments == null ? "LOADING..." : tournaments;
             return _react2.default.createElement(
                 'div',
-                null,
+                { className: 'w3-container' },
                 _react2.default.createElement(
-                    'p',
+                    'h2',
                     null,
-                    ' Existing Tournaments '
+                    'Existing Tournaments'
                 ),
                 tournaments,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    ' Add new Tournament '
-                ),
                 _react2.default.createElement(
                     'form',
                     { onSubmit: this.handleCreateTournament },
@@ -77619,20 +77645,23 @@ var AddTournament = function (_Component) {
                         'label',
                         null,
                         'Name:',
-                        _react2.default.createElement('input', { type: 'text',
+                        _react2.default.createElement('input', { className: 'w3-input',
+                            type: 'text',
                             ref: function ref(input) {
                                 return _this7.tournamentNameInput = input;
                             }
                         }),
                         _react2.default.createElement('br', null),
                         'Description:',
-                        _react2.default.createElement('input', { type: 'text',
+                        _react2.default.createElement('input', { className: 'w3-input',
+                            type: 'text',
                             ref: function ref(input) {
                                 return _this7.tournamentDescriptionInput = input;
                             }
                         }),
                         _react2.default.createElement('br', null),
-                        _react2.default.createElement('input', { type: 'submit', value: 'Submit' })
+                        _react2.default.createElement('input', { className: 'w3-btn w3-blue w3-margin-top w3-margin-bottom',
+                            type: 'submit', value: 'Submit' })
                     )
                 )
             );

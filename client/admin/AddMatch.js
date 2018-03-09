@@ -260,15 +260,23 @@ class AddMatch extends Component {
 					</select>
 				<br / >
 				Cost:
-				<input type="text" ref={(input) => this.matchCostInput = input}/>
+				<input className="w3-input" 
+					type="text" 
+					ref={(input) => this.matchCostInput = input}/>
 				<br />
 				Dev Fee (%):
-				<input type="text" ref={(input) => this.matchDevFeeInput = input}/>
+				<input className="w3-input" 
+					type="text" 
+					ref={(input) => this.matchDevFeeInput = input}/>
 				<br />
 				Time Stamp:
-				<input value="1530000000" type="text" ref={(input) => this.matchTimeInput = input}/>
+				<input className="w3-input" 
+					value="1530000000" 
+					type="text" 
+					ref={(input) => this.matchTimeInput = input}/>
 				<br />
-				<input type = "submit" value = "Submit" / >
+				<input className="w3-btn w3-blue w3-margin-top w3-margin-bottom"
+					type = "submit" value = "Submit" / >
 				</label> 
 			</form> 
 			);
@@ -277,8 +285,7 @@ class AddMatch extends Component {
 	  }
 	  
 	  return(
-		<div >
-			<p> Add new Match < /p> 
+		<div className="w3-container">
 			{form}
 		</div>
 	  );

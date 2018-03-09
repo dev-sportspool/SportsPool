@@ -151,31 +151,34 @@ class AddTournament extends Component {
             ));
     }
     tournaments = tournaments == null ? "LOADING..." : tournaments;
-    return ( <div >
-            < p > Existing Tournaments < /p> 
-			{ tournaments } 
-		<p> Add new Tournament < /p> 
-		<form onSubmit = {
-            this.handleCreateTournament
-        } >
-        <label >
-        Name:
-        <input type = "text"
-				ref = {
-					(input) => this.tournamentNameInput = input
-				}
-		/> 
-		<br / >
-        Description:
-        <input type = "text"
-				ref = {
-					(input) => this.tournamentDescriptionInput = input
-				}
-		/> 
-		<br / >
-        <input type = "submit" value = "Submit" / >
-        </label> 
-		</form > 
+    return (<div className="w3-container">
+			<h2>Existing Tournaments< /h2> 
+				{tournaments}
+			
+			<form onSubmit = {
+				this.handleCreateTournament
+			} >
+			<label >
+			Name:
+			<input className="w3-input" 
+				type = "text"
+					ref = {
+						(input) => this.tournamentNameInput = input
+					}
+			/> 
+			<br / >
+			Description:
+			<input className="w3-input" 
+				type = "text"
+					ref = {
+						(input) => this.tournamentDescriptionInput = input
+					}
+			/> 
+			<br / >
+			<input className="w3-btn w3-blue w3-margin-top w3-margin-bottom"
+				type = "submit" value = "Submit" / >
+			</label> 
+			</form >
 		</div>
 );
 }

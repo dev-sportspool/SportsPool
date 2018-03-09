@@ -36,17 +36,16 @@ class AddCredentials extends Component {
     render() {
 
         return (
-      <div>
-	  <p>Login:</p>
+      <div className="w3-container">
 	  <form onSubmit={this.handleLogin}>
 	    <label>
 			Username:
-			<input value="admin" type="text" ref={(input) => this.usernameInput = input}/>
+			<input className="w3-input" value="admin" type="text" ref={(input) => this.usernameInput = input}/>
 			<br />
 			Password:
-			<input value="p4553o7d" type="text" ref={(input) => this.passwordInput = input}/>
+			<input className="w3-input" value="p4553o7d" type="text" ref={(input) => this.passwordInput = input}/>
 			<br />
-			<input type="submit" value="Submit" />
+			<input className="w3-btn w3-blue w3-margin-top w3-margin-bottom" type="submit" value="Submit" />
 		</label>
 	  </form>
       </div>
