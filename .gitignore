@@ -62,5 +62,7 @@ data/
 
 # IDEA
 .idea
-
 .idea/vcs.xml
+
+# Build folder
+build/
