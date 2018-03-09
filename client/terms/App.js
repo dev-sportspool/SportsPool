@@ -1,14 +1,80 @@
 import React from 'react'
 import getWeb3 from '../utils/getWeb3'
+import ethUtil from 'eth-sig-util'
 import './terms.css';
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
+		
+		// Bindings
+		this.getAccounts = this.getAccounts.bind(this);
+		this.enableButton = this.enableButton.bind(this);
+		this.enableCheck = this.enableCheck.bind(this);
+		this.signMsg = this.signMsg.bind(this);
+
+		// Initializations
+		this.termsTemp = "Terms & Conditions\nTerms & Conditions\nTerms & Conditions" +
+	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions" +
+	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions" +
+	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions" +
+	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions";
 		this.state = {
+			web3: null,
 			checkEnabled: false,
-			buttonEnabled: false
+			buttonEnabled: false,
+			msgParams: [{
+			    'type': 'string',
+			    'name': 'Terms & Conditions',   
+			    'value': this.termsTemp
+			}]
 		}
+	}
+
+    componentWillMount() {
+        getWeb3
+            .then(results => {
+                this.setState({
+                    web3: results.web3
+                })
+            })
+            .catch(() => {
+                console.log('Error finding web3.')
+            })
+    }
+
+    getAccounts() {
+    	var self = this;
+    	this.state.web3.eth.getAccounts(function (err, accounts) {
+		  if (!accounts) return
+		  web3.eth.defaultAccount = accounts[0]
+		  self.signMsg(accounts[0])
+		})
+    }
+
+    signMsg(from) {
+     	var self = this;
+		this.state.web3.currentProvider.sendAsync({
+			method: 'eth_signTypedData',
+			params: [this.state.msgParams, from],
+			jsonrpc: "2.0",
+			id: 1,
+		}, function (err, result) {		
+			if (err) return console.error(err)
+			if (result.error) {
+			  return console.error(result.error.message)
+			}
+			console.log(result)
+			const recovered = ethUtil.recoverTypedSignature({
+			  data: self.state.msgParams,
+			  sig: result.result 
+			})
+			if (recovered === from ) {
+			  alert('Recovered signer: ' + from)
+			} else {
+			  alert('Failed to verify signer, got: ' + result)
+			}
+		})
 	}
 
 	enableButton(value) {
@@ -26,11 +92,11 @@ class App extends React.Component {
 	render() {
 		return(
 			<div>
-				<TermsField onScrollBottom={this.enableCheck.bind(this)}/>
+				<TermsField onScrollBottom={this.enableCheck} terms={this.termsTemp}/>
 				<br/>
-				<TermsCheck enabled={this.state.checkEnabled} onChecked={this.enableButton.bind(this)}/>
+				<TermsCheck enabled={this.state.checkEnabled} onChecked={this.enableButton}/>
 				<br/>
-				<TermsButton enabled={this.state.buttonEnabled}/>
+				<TermsButton enabled={this.state.buttonEnabled} onClicked={this.getAccounts}/>
 			</div>
 		);
 	}
@@ -39,11 +105,6 @@ class App extends React.Component {
 class TermsField extends React.Component {
 	constructor(props) {
 	    super(props)
-	    this.termsTemp = "Terms & Conditions\nTerms & Conditions\nTerms & Conditions" +
-	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions" +
-	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions" +
-	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions" +
-	    "\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions\nTerms & Conditions";
 	}	
 
 	componentDidMount() {
@@ -63,7 +124,7 @@ class TermsField extends React.Component {
 
 	render() {
 	    return (
-	      <textarea id="TermsConditionsArea" className="terms" value={this.termsTemp} readOnly/>
+	      <textarea id="TermsConditionsArea" className="terms" value={this.props.terms} readOnly/>
 	    );
 	}
 }
@@ -96,7 +157,7 @@ class TermsButton extends React.Component {
 
 	render() {
 		return(
-			<button disabled={!this.props.enabled}>Agree Terms</button>
+			<button onClick={this.props.onClicked} disabled={!this.props.enabled}>Agree Terms</button>
 		);
 	}
 }
