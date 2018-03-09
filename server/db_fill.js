@@ -14,7 +14,7 @@ MongoClient.connect("mongodb://"+CONST.DB_ADMIN_USERNAME+":"+CONST.DB_ADMIN_PASS
 		  }).then(function(result){
 		  console.log("created tournament");
 		  return database.collection(CONST.MATCH).insert({
-			  _id:1,
+			  match_number:1,
 			  tournament_id:1,
 			  date:new Date("2018-06-14T00:00:00.000Z"),
 			  bet_cutoff_minutes:60,

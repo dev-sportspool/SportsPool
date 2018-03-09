@@ -76,12 +76,15 @@ var DBReader = class DBReader{
 		});
 	}
 	
-	getMatch(id, success, failure){
+	getMatch(match_id, tournament_id, success, failure){
 		MongoClient.connect("mongodb://"+CONST.DB_GUEST_USERNAME+":"+CONST.DB_GUEST_PASSWORD+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
 		  if (err) failure(err);
 		  var database = db.db(CONST.DB_ADDRESS);
 		  var match;
-		  var query = {_id:id };
+		  var query = { $and: [ 
+							{ match_number:match_id}, 
+							{ tournament_id:tournament_id} ] 
+						};
 			database.collection(CONST.MATCH)
 			.findOne(query)
 			.then(function(result){

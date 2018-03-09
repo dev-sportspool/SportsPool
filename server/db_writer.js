@@ -26,16 +26,15 @@ var DBWriter = class DBWriter{
 		});
 	}
 	
-	addMatch(username,password,id, tournament_id, date_str, bet_cutoff_minutes, state, team_a_id, team_b_id, success, failure){
+	addMatch(username,password,id, tournament_id, time_stamp, bet_cutoff_minutes, state, team_a_id, team_b_id, success, failure){
 		MongoClient.connect("mongodb://"+username+":"+password+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
 		  if (err) throw err;
 		  console.log("Connected to db :"+db);
-		  //todo: match id is per tournament in contract. in mongo id is global. needs fixing
 		  var database = db.db(CONST.DB_ADDRESS);
 			  database.collection(CONST.MATCH).insert({
-				  _id:id,
+				  match_number:id,
 				  tournament_id:tournament_id,
-				  date:new Date(date_str), //ex: "2018-06-14T00:00:00.000Z"
+				  date:time_stamp,
 				  bet_cutoff_minutes:bet_cutoff_minutes,
 				  state:state,
 				  team_a_id:team_a_id,
@@ -54,12 +53,16 @@ var DBWriter = class DBWriter{
 		});
 	}
 	
-	setMatchScore(username, password, id, score_team_a, score_team_b, success, failure){
+	setMatchScore(username, password, match_id, tournament_id, score_team_a, score_team_b, success, failure){
 		MongoClient.connect("mongodb://"+username+":"+password+"@"+CONST.DB_ADDRESS+":"+CONST.DB_PORT+"/?authMechanism=DEFAULT&authSource="+CONST.DB_NAME, function(err, db) {
 		  if (err) throw err;
 		  console.log("Connected to db :"+db);
 		  var database = db.db(CONST.DB_ADDRESS);
-		  var query = { _id:id };
+		  
+		  var query = { $and: [ 
+							{ match_number:match_id}, 
+							{ tournament_id:tournament_id} ] 
+						};
 		  var newValues = {$set: {score_team_a: score_team_a, score_team_b: score_team_b }};
 			  database.collection(CONST.MATCH)
 			  .updateOne(query,newValues)

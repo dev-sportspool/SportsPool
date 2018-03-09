@@ -69,10 +69,11 @@ app.get('/matches', function(request, response) {
 });
 
 app.get('/match', function(request, response) {
-    var id = parseInt(request.query.id);
-    console.log("id=" + id);
+    var match_number = parseInt(request.query.match_number);
+	var tournament_id = parseInt(request.query.tournament_id);
+    console.log("match_number=" + match_number +", tournament_id="+tournament_id);
     response.setHeader('Content-Type', 'application/json');
-    (new DBReader()).getMatch(id, function(result) {
+    (new DBReader()).getMatch(match_number, tournament_id, function(result) {
             console.log("match success:" + result);
             response.write(JSON.stringify(result));
             response.end();
@@ -121,7 +122,7 @@ app.post('/match', function(request, response) {
     var obj = request.body
     console.log("obj=" + JSON.stringify(obj));
     response.setHeader('Content-Type', 'application/json');
-    (new DBWriter()).addMatch(obj.username, obj.password, parseInt(obj.id), parseInt(obj.tournament_id), obj.date_str, parseInt(obj.bet_cutoff_minutes), parseInt(obj.state), parseInt(obj.team_a_id), parseInt(obj.team_b_id), function(result) {
+    (new DBWriter()).addMatch(obj.username, obj.password, parseInt(obj.match_number), parseInt(obj.tournament_id), parseInt(obj.date_time_stamp), parseInt(obj.bet_cutoff_minutes), parseInt(obj.state), parseInt(obj.team_a_id), parseInt(obj.team_b_id), function(result) {
             console.log("added match success:" + result);
             response.write(JSON.stringify(result));
             response.end();
@@ -138,7 +139,7 @@ app.post('/matchScore', function(request, response) {
     var obj = request.body
     console.log("obj=" + JSON.stringify(obj));
     response.setHeader('Content-Type', 'application/json');
-    (new DBWriter()).setMatchScore(obj.username, obj.password, parseInt(obj.id), parseInt(obj.score_team_a), parseInt(obj.score_team_b), function(result) {
+    (new DBWriter()).setMatchScore(obj.username, obj.password, parseInt(obj.match_number), parseInt(obj.tournament_id), parseInt(obj.score_team_a), parseInt(obj.score_team_b), function(result) {
             console.log("added match scores success:" + result);
             response.write(JSON.stringify(result));
             response.end();
