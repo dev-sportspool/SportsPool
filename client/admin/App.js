@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import SportsPoolContract from '../../build/contracts/SportsPool.json'
 import getWeb3 from '../utils/getWeb3'
 import AddTournament from './AddTournament'
 import AddTeam from './AddTeam'
@@ -21,8 +22,42 @@ class App extends Component {
 		contract: null
 	}
   }
+  
+  instantiateContract() {
+        const contract = require('truffle-contract')
 
-  componentWillMount() {
+        const sportsPool = contract(SportsPoolContract)
+        sportsPool.setProvider(this.state.web3.currentProvider)
+
+        var sportsPoolInstance
+
+        this.state.web3.eth.getAccounts((error, accounts) => {
+            this.setState({
+                accounts: accounts
+            });
+            sportsPool.deployed().then((instance) => {
+                sportsPoolInstance = instance
+                this.setState({
+                    contract: sportsPoolInstance
+                });
+                /*
+					The .Watch() works, BUT for latest block and as new block created
+                
+                sportsPoolInstance.TournamentAdded()
+                    .watch((error, result) => {
+                        console.log("got alert!");
+                        if (!error) {
+                            console.log("event success:" + result);
+                            alert("Event+"+ JSON.stringify(result));
+                        } else {
+                            alert("error");
+                        }
+                    });*/
+            })
+        })
+    }
+
+componentWillMount() {
 	getWeb3
 		.then(results => {
 			this.setState({
@@ -36,6 +71,7 @@ class App extends Component {
 }
   
   componentDidMount() {
+
   }
   
   onLogin(uname,pword){
@@ -48,7 +84,7 @@ class App extends Component {
   
   makeCard(heading, content){
 	  return (<div className="w3-card-4 w3-margin-top"
-				style={{margin: "auto", width: "50%"}}>
+				style={{margin: "auto", width: "500px"}}>
 				<div className="w3-container w3-green">
 					<h2>{heading}</h2>
 				</div>
@@ -63,15 +99,21 @@ class App extends Component {
 		  var addTournamentCard = this.makeCard("Add new Tournament",
 												<AddTournament 
 														username = {this.state.username} 
-														password = {this.state.password}/>);
+														password = {this.state.password}
+														account = {this.state.accounts[0]}
+														contract = {this.state.contract}/>);
 		  var addTeamCard = this.makeCard("Add new Team",
 											<AddTeam 
 													username = {this.state.username} 
-													password = {this.state.password}/>);
+													password = {this.state.password}
+													account = {this.state.accounts[0]}
+													contract = {this.state.contract}/>);
 	      var addMatchCard = this.makeCard("Add new Match",
 											<AddMatch 
 													username = {this.state.username} 
-													password = {this.state.password}/>);
+													password = {this.state.password}
+													account = {this.state.accounts[0]}
+													contract = {this.state.contract}/>);
 		  content = (	
 		  <div>
 			  {addTournamentCard}

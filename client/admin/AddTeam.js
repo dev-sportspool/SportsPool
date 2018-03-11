@@ -7,6 +7,8 @@ import '../css/open-sans.css'
 import '../css/pure-min.css'
 import '../css/App.css'
 
+import repo from './Repository'
+
 class AddTeam extends Component {
     constructor(props) {
         super(props)
@@ -22,62 +24,23 @@ class AddTeam extends Component {
     }
 
     componentDidMount() {
-        this.getTeams();
-    }
-
-
-
-    getTeams() {
-        this.setState((prevState, props) => ({
-            teams: null
-        }));
-        fetch('/teams')
-            .then(function(response) {
-                if (response.status >= 400) {
-                    throw new Error("Bad response from server");
-                }
-                return response.json();
-            })
-            .then((results) => {
-                this.setState((prevState, props) => ({
-                    teams: results
-                }));
-            });
+        repo.getTeams().observe((resource)=>{
+			this.teamIDInput.value = "";
+            this.teamNameInput.value = "";
+            this.teamCountryInput.value = "";
+			this.setState((prevState, props) => ({
+				teams: resource.data
+			}));
+		});
     }
 
     handleCreateTeam(event) {
         //todo validate?
-        alert("ID:" + this.teamIDInput.value + ",name:" + this.teamNameInput.value + ", descr:" + this.teamCountryInput.value);
+        //alert("ID:" + this.teamIDInput.value + ",name:" + this.teamNameInput.value + ", descr:" + this.teamCountryInput.value);
 
-        this.addTeamToDB(this.teamIDInput.value);
+        repo.addTeam(this.props.username, this.props.password, this.teamIDInput.value, this.teamNameInput.value, this.teamCountryInput.value, '', '');
 
         event.preventDefault();
-    }
-
-    addTeamToDB(id) {
-        fetch('/team', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: this.props.username,
-                password: this.props.password,
-                id: this.teamIDInput.value,
-                name: this.teamNameInput.value,
-                country: this.teamCountryInput.value,
-                icon: '',
-                banner: ''
-            })
-        }).then((resp) => {
-            this.teamIDInput.value = "";
-            this.teamNameInput.value = "";
-            this.teamCountryInput.value = "";
-            this.getTeams();
-        }).catch((ex) => {
-            alert("Error:" + ex);
-        })
     }
 
     render() {

@@ -9,102 +9,50 @@ import '../css/open-sans.css'
 import '../css/pure-min.css'
 import '../css/App.css'
 
+import repo from './Repository'
+
 class AddTournament extends Component {
     constructor(props) {
         super(props)
 
         this.handleCreateTournament = this.handleCreateTournament.bind(this);
         this.state = {
-            web3: null,
-            accounts: null,
-            contract: null,
-			tournaments: null
+			tournaments:null
         }
     }
 
-    componentWillMount() {
-        getWeb3
-            .then(results => {
-                this.setState({
-                    web3: results.web3
-                })
-                this.instantiateContract()
-            })
-            .catch(() => {
-                console.log('Error finding web3.')
-            })
-    }
+
 
     componentDidMount() {
-        this.getTournaments();
+        repo.getTournaments().observe((resource)=>{
+			this.tournamentNameInput.value = "";
+            this.tournamentDescriptionInput.value = "";
+			this.setState((prevState, props) => ({
+				tournaments: resource.data
+			}));
+		});
     }
 
-    instantiateContract() {
-
-        const contract = require('truffle-contract')
-
-        const sportsPool = contract(SportsPoolContract)
-        sportsPool.setProvider(this.state.web3.currentProvider)
-
-        var sportsPoolInstance
-
-        this.state.web3.eth.getAccounts((error, accounts) => {
-            this.setState({
-                accounts: accounts
-            });
-            sportsPool.deployed().then((instance) => {
-                sportsPoolInstance = instance
-                this.setState({
-                    contract: sportsPoolInstance
-                });
-                /*
-                Could not get the .Watch() to work. :(
-                */
-                sportsPoolInstance.TournamentAdded()
-                    .watch((error, result) => {
-                        console.log("got alert!");
-                        if (!error) {
-                            console.log("event success:" + result);
-                            alert("Event": result);
-                        } else {
-                            alert("error");
-                        }
-                    });
-            })
-        })
-    }
-
-    getTournaments() {
-        this.setState((prevState, props) => ({
-            tournaments: null
-        }));
-        fetch('/tournaments')
-            .then((response) => {
-                if (response.status >= 400) {
-                    throw new Error("Bad response from server");
-                }
-                return response.json();
-            })
-            .then((results) => {
-                this.setState((prevState, props) => ({
-                    tournaments: results
-                }));
-            });
-    }
 
     handleCreateTournament(event) {
         //todo validate?
         //alert("name:" + this.tournamentNameInput.value + ", descr:" + this.tournamentDescriptionInput.value);
 
-        this.state.contract.addTournament({
-                from: this.state.accounts[0]
+        this.props.contract.addTournament({
+                from: this.props.account
             })
             .then((result) => {
                 console.log("Result:" + JSON.stringify(result));
                 for (var i = 0; result.logs.length; i++) {
                     var log = result.logs[i];
                     if (log.event === "TournamentAdded") {
-                        this.addTournamentToDB(log.args.tournamentId)
+						repo.addTournament(this.props.username,
+							this.props.password,
+							log.args.tournamentId,
+							this.tournamentNameInput.value,
+							this.tournamentDescriptionInput.value,
+							'',
+							'');
                         return;
                     }
                 }
@@ -114,31 +62,6 @@ class AddTournament extends Component {
             });
 
         event.preventDefault();
-    }
-
-    addTournamentToDB(id) {
-        fetch('/tournament', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: this.props.username,
-                password: this.props.password,
-                id: id,
-                name: this.tournamentNameInput.value,
-                description: this.tournamentDescriptionInput.value,
-                icon: '',
-                banner: ''
-            })
-        }).then((resp) => {
-            this.tournamentNameInput.value = "";
-            this.tournamentDescriptionInput.value = "";
-            this.getTournaments();
-        }).catch((ex) => {
-            alert("Error:" + ex);
-        })
     }
 
     render() {

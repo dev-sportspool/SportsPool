@@ -40,10 +40,10 @@ class AddCredentials extends Component {
 	  <form onSubmit={this.handleLogin}>
 	    <label>
 			Username:
-			<input className="w3-input" value="admin" type="text" ref={(input) => this.usernameInput = input}/>
+			<input className="w3-input" defaultValue="admin" type="text" ref={(input) => this.usernameInput = input}/>
 			<br />
 			Password:
-			<input className="w3-input" value="p4553o7d" type="text" ref={(input) => this.passwordInput = input}/>
+			<input className="w3-input" defaultValue="p4553o7d" type="text" ref={(input) => this.passwordInput = input}/>
 			<br />
 			<input className="w3-btn w3-blue w3-margin-top w3-margin-bottom" type="submit" value="Submit" />
 		</label>
