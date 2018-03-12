@@ -1,11 +1,15 @@
 import React from 'react'
 import getWeb3 from '../utils/getWeb3'
 import ethUtil from 'eth-sig-util'
+import Cookies from 'cookies-js'
 import './terms.css';
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
+
+		// Consts
+		this.cookieKey = "Signature";
 		
 		// Bindings
 		this.getAccounts = this.getAccounts.bind(this);
@@ -23,6 +27,8 @@ class App extends React.Component {
 			web3: null,
 			checkEnabled: false,
 			buttonEnabled: false,
+			userAccepted: false,
+			account: null,
 			msgParams: [{
 			    'type': 'string',
 			    'name': 'Terms & Conditions',   
@@ -37,26 +43,50 @@ class App extends React.Component {
                 this.setState({
                     web3: results.web3
                 })
+                this.getAccounts();
             })
             .catch(() => {
                 console.log('Error finding web3.')
-            })
+            });
     }
 
     getAccounts() {
     	var self = this;
     	this.state.web3.eth.getAccounts(function (err, accounts) {
 		  if (!accounts) return
-		  web3.eth.defaultAccount = accounts[0]
-		  self.signMsg(accounts[0])
+		  web3.eth.defaultAccount = accounts[0];
+		  self.state.account = accounts[0];
+		  if (Cookies.enabled) {
+        	try {
+        		let signature = Cookies.get(self.cookieKey);
+        		if (signature !== undefined) {
+	        		console.log(signature);
+	        		const recovered = ethUtil.recoverTypedSignature({
+					  data: self.state.msgParams,
+					  sig: signature 
+					})
+					if (recovered === accounts[0] ) {
+					  	self.setState({
+							userAccepted: true
+						});
+					} else {
+					  	console.log("User never agreed");
+					}
+				}
+        	} catch(error) {
+        		console.log(error)
+        		console.log("Cookie doesnt exist. User never agreed");
+        	}    		
+        }
 		})
     }
 
-    signMsg(from) {
+    signMsg() {
      	var self = this;
+     	console.log(this.state.account)
 		this.state.web3.currentProvider.sendAsync({
 			method: 'eth_signTypedData',
-			params: [this.state.msgParams, from],
+			params: [this.state.msgParams, this.state.account],
 			jsonrpc: "2.0",
 			id: 1,
 		}, function (err, result) {		
@@ -65,14 +95,8 @@ class App extends React.Component {
 			  return console.error(result.error.message)
 			}
 			console.log(result)
-			const recovered = ethUtil.recoverTypedSignature({
-			  data: self.state.msgParams,
-			  sig: result.result 
-			})
-			if (recovered === from ) {
-			  alert('Recovered signer: ' + from)
-			} else {
-			  alert('Failed to verify signer, got: ' + result)
+			if (Cookies.enabled) {
+				Cookies.set(self.cookieKey, result.result, { expires: 60*60*24*30 }); // 30 days expiration
 			}
 		})
 	}
@@ -90,13 +114,21 @@ class App extends React.Component {
 	}
 
 	render() {
-		return(
-			<div>
+		let output = null;
+		if (this.state.userAccepted) {
+			output = "User accepter Terms & Conditions. Redirecting ...."
+		} else {
+			output = 			<div>
 				<TermsField onScrollBottom={this.enableCheck} terms={this.termsTemp}/>
 				<br/>
 				<TermsCheck enabled={this.state.checkEnabled} onChecked={this.enableButton}/>
 				<br/>
-				<TermsButton enabled={this.state.buttonEnabled} onClicked={this.getAccounts}/>
+				<TermsButton enabled={this.state.buttonEnabled} onClicked={this.signMsg}/>
+			</div>
+		}
+		return(
+			<div>
+			{output}
 			</div>
 		);
 	}
@@ -110,8 +142,8 @@ class TermsField extends React.Component {
 	componentDidMount() {
 		var self = this;
 		$("#TermsConditionsArea").on('scroll', function() {
-		    console.log("scrollHeight: " + this.scrollHeight);
-		    console.log("scrollTop: " + this.scrollTop);
+		    // console.log("scrollHeight: " + this.scrollHeight);
+		    // console.log("scrollTop: " + this.scrollTop);
 		    
 		    var offset = 250; // This might have to change
 		    
