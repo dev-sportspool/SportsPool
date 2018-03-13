@@ -2,15 +2,17 @@ import React from 'react'
 import getWeb3 from '../utils/getWeb3'
 import ethUtil from 'eth-sig-util'
 import Cookies from 'cookies-js'
+import SHA256 from 'crypto-js/sha256'
 import './terms.css';
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
-
-		// Consts
-		this.cookieKey = "Signature";
 		
+		// Account related
+		this.account = null;
+		this.accountHash = null;
+
 		// Bindings
 		this.getAccounts = this.getAccounts.bind(this);
 		this.enableButton = this.enableButton.bind(this);
@@ -28,7 +30,6 @@ class App extends React.Component {
 			checkEnabled: false,
 			buttonEnabled: false,
 			userAccepted: false,
-			account: null,
 			msgParams: [{
 			    'type': 'string',
 			    'name': 'Terms & Conditions',   
@@ -55,10 +56,11 @@ class App extends React.Component {
     	this.state.web3.eth.getAccounts(function (err, accounts) {
 		  if (!accounts) return
 		  web3.eth.defaultAccount = accounts[0];
-		  self.state.account = accounts[0];
+		  self.account = accounts[0];
+		  self.accountHash = SHA256(accounts[0]).toString();
 		  if (Cookies.enabled) {
         	try {
-        		let signature = Cookies.get(self.cookieKey);
+        		let signature = Cookies.get(self.accountHash);
         		if (signature !== undefined) {
 	        		console.log(signature);
 	        		const recovered = ethUtil.recoverTypedSignature({
@@ -83,10 +85,9 @@ class App extends React.Component {
 
     signMsg() {
      	var self = this;
-     	console.log(this.state.account)
 		this.state.web3.currentProvider.sendAsync({
 			method: 'eth_signTypedData',
-			params: [this.state.msgParams, this.state.account],
+			params: [this.state.msgParams, this.account],
 			jsonrpc: "2.0",
 			id: 1,
 		}, function (err, result) {		
@@ -96,7 +97,7 @@ class App extends React.Component {
 			}
 			console.log(result)
 			if (Cookies.enabled) {
-				Cookies.set(self.cookieKey, result.result, { expires: 60*60*24*30 }); // 30 days expiration
+				Cookies.set(self.accountHash, result.result, { expires: 60*60*24*30 }); // 30 days expiration
 			}
 		})
 	}
