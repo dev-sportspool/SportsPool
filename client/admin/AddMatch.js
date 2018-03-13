@@ -149,7 +149,7 @@ class AddMatch extends Component {
 				let matchesList  = this.createMatchesList();
 				matchesString = <p>Existing match ids:{matchesList}</p>;
 			}else{
-				matchesString = (<p>Loading...</p>);
+				matchesString = (<div className="loader"></div>);
 			}
 			let teamOptions = null;
 			if(this.state.teams!=null){
@@ -167,17 +167,17 @@ class AddMatch extends Component {
 					</select>
 					{matchesString}
 				Select Team A:
-				<select className="w3-select"
+					<select className="w3-select"
 						onChange={this.handleTeamASelection}>
 						{teamOptions}
 					</select>
-					<br />
+					<br /><br />
 				Select Team B:
 				<select className="w3-select"
 						onChange={this.handleTeamBSelection}>
 						{teamOptions}
 					</select>
-				<br / >
+				<br / ><br />
 				Cost:
 				<input className="w3-input" 
 					type="text" 
@@ -200,7 +200,7 @@ class AddMatch extends Component {
 			</form> 
 			);
 	  }else{
-		  form = (<p>Loading...</p>);
+		  form = (<div className="loader"></div>);
 	  }
 	  
 	  return(

@@ -55,7 +55,7 @@ class AddTeam extends Component {
 			   </div>
             ));
         }
-        teams = teams == null ? "LOADING..." : teams;
+        teams = teams == null ? <div className="loader"></div> : teams;
         return (
             <div className="w3-container">
 	  

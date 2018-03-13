@@ -76,7 +76,7 @@ class AddTournament extends Component {
 				</div>
             ));
     }
-    tournaments = tournaments == null ? "LOADING..." : tournaments;
+    tournaments = tournaments == null ? <div className="loader"></div> : tournaments;
     return (<div className="w3-container">
 			<h2>Existing Tournaments< /h2> 
 				{tournaments}
