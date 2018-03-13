@@ -1,6 +1,7 @@
 import React, {
     Component
 } from 'react'
+import Alert from '../utils/Alert'
 
 import '../css/oswald.css'
 import '../css/open-sans.css'
@@ -15,7 +16,8 @@ class AddTeam extends Component {
 
         this.handleCreateTeam = this.handleCreateTeam.bind(this);
         this.state = {
-			teams: null
+			teams: null,
+			error:null
 		}
     }
 
@@ -29,7 +31,8 @@ class AddTeam extends Component {
             this.teamNameInput.value = "";
             this.teamCountryInput.value = "";
 			this.setState((prevState, props) => ({
-				teams: resource.data
+				teams: resource.data,
+				error: resource.error
 			}));
 		});
     }
@@ -79,6 +82,14 @@ class AddTeam extends Component {
 					type="submit" value="Submit" />
 		</label>
 	  </form>
+	    {
+			this.state.error
+			? <Alert
+				title={"Error"}
+				message={this.state.error.message}
+				onClose={()=>{this.setState({error:null})}}/>
+			:null
+		}
       </div>
         );
     }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import SportsPoolContract from '../../build/contracts/SportsPool.json'
 import getWeb3 from '../utils/getWeb3'
+import Alert from '../utils/Alert'
 
 import '../css/oswald.css'
 import '../css/open-sans.css'
@@ -24,13 +25,15 @@ class AddMatch extends Component {
 			matches: null,
 			team_a_id:null,
 			team_b_id:null,
+			error:null
         }
   }
     
   componentDidMount() {
 	repo.getTournaments().observe((resource)=>{
 		this.setState((prevState, props) => ({
-			tournaments: resource.data
+			tournaments: resource.data,
+				error:resource.error
 		}));
 		if(resource.data!=null && resource.data[0]!=null){
 			repo.getMatches(resource.data[0]._id);
@@ -38,7 +41,8 @@ class AddMatch extends Component {
 	});
 	repo.getTeams().observe((resource)=>{
 		this.setState((prevState, props) => ({
-			teams: resource.data
+			teams: resource.data,
+			error: resource.error
 		}));
 	});
 	repo.matches.observe((resource)=>{
@@ -50,7 +54,8 @@ class AddMatch extends Component {
 			this.matchTimeInput.value = "1530000000";
 		if(resource!=null && resource.data !=null){
 			this.setState((prevState, props) => ({
-				matches: resource.data
+				matches: resource.data,
+				error: resource.error
 			}));
 		}
 	});
@@ -93,10 +98,9 @@ class AddMatch extends Component {
                         return;
                     }
                 }
-                alert("Something went wrong!")
+                this.setState({error:new Error("Smart contract error.")})
             }).catch((ex) => {
-				console.log("Error:\n"+ex);
-                alert("Error:" + ex);
+				this.setState({error:ex})
             });
 		event.preventDefault();
 	}
@@ -151,23 +155,26 @@ class AddMatch extends Component {
 			if(this.state.teams!=null){
 				teamOptions = this.createTeamOptions();
 			}else{
-				teamOptions = (<p>Loading...</p>);
+				teamOptions = ("Loading...");
 			}
 		  form = (
 			<form onSubmit = {this.handleCreateMatch}>
 				<label >
 				Select Tournament:
-					<select onChange={this.handleTournamentSelection}>
+					<select className="w3-select"
+						onChange={this.handleTournamentSelection}>
 						{tournamentOptions}
 					</select>
 					{matchesString}
 				Select Team A:
-				<select onChange={this.handleTeamASelection}>
+				<select className="w3-select"
+						onChange={this.handleTeamASelection}>
 						{teamOptions}
 					</select>
 					<br />
 				Select Team B:
-				<select onChange={this.handleTeamBSelection}>
+				<select className="w3-select"
+						onChange={this.handleTeamBSelection}>
 						{teamOptions}
 					</select>
 				<br / >
@@ -199,6 +206,14 @@ class AddMatch extends Component {
 	  return(
 		<div className="w3-container">
 			{form}
+			{
+				this.state.error
+				? <Alert
+					title={"Error"}
+					message={this.state.error.message}
+					onClose={()=>{this.setState({error:null})}}/>
+				:null
+			}
 		</div>
 	  );
   }

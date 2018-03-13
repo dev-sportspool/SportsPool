@@ -3,6 +3,7 @@ import React, {
 } from 'react'
 import SportsPoolContract from '../../build/contracts/SportsPool.json'
 import getWeb3 from '../utils/getWeb3'
+import Alert from '../utils/Alert'
 
 import '../css/oswald.css'
 import '../css/open-sans.css'
@@ -17,7 +18,8 @@ class AddTournament extends Component {
 
         this.handleCreateTournament = this.handleCreateTournament.bind(this);
         this.state = {
-			tournaments:null
+			tournaments:null,
+			error:null
         }
     }
 
@@ -28,7 +30,8 @@ class AddTournament extends Component {
 			this.tournamentNameInput.value = "";
             this.tournamentDescriptionInput.value = "";
 			this.setState((prevState, props) => ({
-				tournaments: resource.data
+				tournaments: resource.data,
+				error:resource.error
 			}));
 		});
     }
@@ -56,9 +59,9 @@ class AddTournament extends Component {
                         return;
                     }
                 }
-                alert("Something went wrong!")
+                this.setState({error:new Error("Smart contract error.")})
             }).catch((ex) => {
-                alert("Error:" + ex);
+                this.setState({error:ex})
             });
 
         event.preventDefault();
@@ -102,6 +105,14 @@ class AddTournament extends Component {
 				type = "submit" value = "Submit" / >
 			</label> 
 			</form >
+			{
+				this.state.error
+				? <Alert
+					title={"Error"}
+					message={this.state.error.message}
+					onClose={()=>{this.setState({error:null})}}/>
+				:null
+			}
 		</div>
 );
 }

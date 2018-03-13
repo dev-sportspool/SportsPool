@@ -13,8 +13,9 @@ class Repository{
 		.then((response) => {
 			if (response.status >= 400) {
 				this.tournaments.set(new Resource(null, new Error("Bad response from server")));
+			}else{
+				return response.json();
 			}
-			return response.json();
 		})
 		.then((results) => {
 			this.tournaments.set(new Resource(results,null));
@@ -42,8 +43,12 @@ class Repository{
                 icon: icon,
                 banner: banner
             })
-        }).then((resp) => {
-            this.getTournaments();
+        }).then((response) => {
+			if (response.status >= 400) {
+				this.tournaments.set(new Resource(null, new Error("Bad response from server")));
+			}else{
+				this.getTournaments();
+			}
         }).catch((ex) => {
             this.tournaments.set(new Resource(null, new Error("Error adding tournament:"+ex)));
         })
@@ -55,8 +60,9 @@ class Repository{
 		.then(function(response) {
 			if (response.status >= 400) {
 				this.teams.set(new Resource(null, new Error("Bad response from server")));
+			}else{
+				return response.json();
 			}
-			return response.json();
 		})
         .then((results) => {
 			this.teams.set(new Resource(results,null));
@@ -84,8 +90,12 @@ class Repository{
                 icon: icon,
                 banner: banner
             })
-        }).then((resp) => {
-            this.getTeams();
+        }).then((response) => {
+			if (response.status >= 400) {
+				this.teams.set(new Resource(null, new Error("Bad response from server")));
+			}else{
+				this.getTeams();
+			}
         }).catch((ex) => {
             this.teams.set(new Resource(null, new Error("Error adding team:"+ex)));
         })
@@ -96,8 +106,9 @@ class Repository{
 		.then((response) => {
 			if (response.status >= 400) {
 				this.matches.set(new Resource(null, new Error("Bad response from server")));
+			}else{
+				return response.json();
 			}
-			return response.json();
 		})
 		.then((results) => {
 			this.matches.set(new Resource(results,null));
@@ -126,8 +137,12 @@ class Repository{
 				team_a_id:team_a_id,
 				team_b_id:team_b_id
             })
-        }).then((resp) => {
-            this.getMatches(tournamentId);
+        }).then((response) => {
+			if (response.status >= 400) {
+				this.matches.set(new Resource(null, new Error("Bad response from server")));
+			}else{
+				this.getMatches(tournamentId);
+			}
         }).catch((ex) => {
             this.matches.set(new Resource(null, new Error("Error adding match:"+ex)));
         })
