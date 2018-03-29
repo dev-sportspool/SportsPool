@@ -7,6 +7,8 @@ import '../css/open-sans.css'
 import '../css/pure-min.css' 
 import '../css/App.css'
 
+import MetaMaskContainer from '../utils/MetaMaskContainer'
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -105,8 +107,10 @@ class App extends Component {
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
-              <h1>Available Tournaments!</h1>
-			  {tournaments}
+				<MetaMaskContainer>
+				  <h1>Available Tournaments!</h1>
+				  {tournaments}
+				</MetaMaskContainer>
             </div>
           </div>
         </main>
