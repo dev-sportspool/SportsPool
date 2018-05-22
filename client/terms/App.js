@@ -4,6 +4,8 @@ import ethUtil from 'eth-sig-util'
 import Cookies from 'cookies-js'
 import SHA256 from 'crypto-js/sha256'
 import './terms.css';
+import '../css/App.css'
+
 
 class App extends React.Component {
 	constructor(props) {
@@ -118,6 +120,7 @@ class App extends React.Component {
 		let output = null;
 		if (this.state.userAccepted) {
 			output = "User accepter Terms & Conditions. Redirecting ...."
+			window.location.replace("/");
 		} else {
 			output = 			<div>
 				<TermsField onScrollBottom={this.enableCheck} terms={this.termsTemp}/>
@@ -129,7 +132,7 @@ class App extends React.Component {
 		}
 		return(
 			<div>
-			{output}
+				{output}
 			</div>
 		);
 	}

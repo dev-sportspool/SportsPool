@@ -11,6 +11,9 @@ import '../css/open-sans.css'
 import '../css/pure-min.css' 
 import '../css/App.css'
 
+import NavBar from '../utils/NavBar'
+import Card from '../utils/Card'
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -81,51 +84,41 @@ componentWillMount() {
 		password:pword,
 	}));
   }
-  
-  makeCard(heading, content){
-	  return (<div className="w3-card-4 w3-margin-top"
-				style={{margin: "auto", width: "500px"}}>
-				<div className="w3-container w3-green">
-					<h2>{heading}</h2>
-				</div>
-				{content}
-			</div>
-			);
-  }
-  
+    
   render() {
 	  let content = null;
 	  if(this.state.username!=null && this.state.password!=null){
-		  var addTournamentCard = this.makeCard("Add new Tournament",
-												<AddTournament 
-														username = {this.state.username} 
-														password = {this.state.password}
-														account = {this.state.accounts[0]}
-														contract = {this.state.contract}/>);
-		  var addTeamCard = this.makeCard("Add new Team",
-											<AddTeam 
-													username = {this.state.username} 
-													password = {this.state.password}
-													account = {this.state.accounts[0]}
-													contract = {this.state.contract}/>);
-	      var addMatchCard = this.makeCard("Add new Match",
-											<AddMatch 
-													username = {this.state.username} 
-													password = {this.state.password}
-													account = {this.state.accounts[0]}
-													contract = {this.state.contract}/>);
 		  content = (	
 		  <div>
-			  {addTournamentCard}
-			  {addTeamCard}
-			  {addMatchCard}
+			  <Card title = {"Add new Tournament"}
+					content = {<AddTournament 
+									username = {this.state.username} 
+									password = {this.state.password}
+									account = {this.state.accounts[0]}
+									contract = {this.state.contract}/>}/>
+			  <Card title = {"Add new Team"}
+					content = {<AddTeam 
+									username = {this.state.username} 
+									password = {this.state.password}
+									account = {this.state.accounts[0]}
+									contract = {this.state.contract}/>}/>
+			  <Card title = {"Add new Match"}
+			  content = {<AddMatch 
+									username = {this.state.username} 
+									password = {this.state.password}
+									account = {this.state.accounts[0]}
+									contract = {this.state.contract}/>}/>
 		  </div>
 		  );
 	  }else{
-		  content = this.makeCard("Login", <AddCredentials onLogin = {this.onLogin.bind(this)}/>);
+		  content = <Card title = {"Login"}
+				content ={<AddCredentials onLogin = {this.onLogin.bind(this)}/>}/>
 	  }
     return (
-		<div>{content}</div>
+		<div>
+			<NavBar/>
+			{content}
+		</div>
     );
   } 
 }

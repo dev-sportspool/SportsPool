@@ -6,6 +6,8 @@ import '../css/oswald.css'
 import '../css/open-sans.css'
 import '../css/pure-min.css' 
 import '../css/App.css'
+import NavBar from '../utils/NavBar'
+import Card from '../utils/Card'
 
 import MetaMaskContainer from '../utils/MetaMaskContainer'
 
@@ -99,17 +101,13 @@ class App extends Component {
 	  tournaments = tournaments==null?"LOADING...":tournaments;
     return (
       <div>
-	  <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Home</a>
-			<a href="/swag" className="pure-menu-heading pure-menu-link">Swag Page</a>
-        </nav>
-
+	  <NavBar/>
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
 				<MetaMaskContainer>
-				  <h1>Available Tournaments!</h1>
-				  {tournaments}
+					<Card title={"Available Tournaments!"}
+						content={tournaments}/>
 				</MetaMaskContainer>
             </div>
           </div>
