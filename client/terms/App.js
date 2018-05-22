@@ -5,6 +5,7 @@ import Cookies from 'cookies-js'
 import SHA256 from 'crypto-js/sha256'
 import './terms.css';
 import '../css/App.css'
+import Card from '../utils/Card'
 
 
 class App extends React.Component {
@@ -132,7 +133,9 @@ class App extends React.Component {
 		}
 		return(
 			<div>
-				{output}
+				<Card title={"Terms"}
+					content={output}/>
+				
 			</div>
 		);
 	}
